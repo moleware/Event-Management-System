@@ -1,0 +1,18 @@
+﻿@model IEnumerable<EventManagementSystem.Models.ReservationNote>
+
+<ul class="reservationNoteList list-group">
+    @foreach (var rn in Model)
+    {
+        <li class="list-group-item">
+            @if (User.IsScheduler())
+            {
+                <span data-id="@rn.reservationNoteId" class="btn btn-default pull-right glyphicon glyphicon-remove deleteNote"></span>
+            }
+            <p><strong>@rn.created.ToString("MM/dd") (@rn.createdBy)</strong></p>
+            @if (rn.note != null)
+            {
+                <p>@Html.Raw(rn.note.Replace("\n", "<br/>"))</p>
+            }
+        </li>
+    }
+</ul>

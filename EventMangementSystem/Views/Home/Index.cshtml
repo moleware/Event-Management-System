@@ -1,0 +1,281 @@
+﻿@model EventManagementSystem.Models.CalendarViewModel
+
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <div class="calendar" id="calendar">
+        <div class="row currentdate">
+            <span>@(Model.StartTime.ToLongDateString())</span>
+        </div>
+
+        <div class="row hidden-print">
+            <div class="col-xs-2">
+                <a data-trigger="hover" data-toggle="tooltip" data-placement="bottom" title="Previous Day" class="helptip btn btn-default btn-xs pull-left" href="@Url.Action("Index", new { startTime = Model.StartTime.AddDays(-1) })"><span class="glyphicon glyphicon-fast-backward"></span></a>
+                <a data-trigger="hover" data-toggle="tooltip" data-placement="bottom" title="Previous Hour" class="helptip btn btn-default btn-xs pull-left" href="@Url.Action("Index", new { startTime = Model.StartTime.AddHours(-1) })"><span class="glyphicon glyphicon-step-backward"></span></a>
+            </div>
+            <div class="col-xs-8 text-center">
+                <div class="col-xs-2 col-xs-offset-5 input-append date" id="dp3" data-date-format="mm-dd-yyyy">
+                    <input class="hidden-xs" type="hidden" value="@(DateTime.Now.ToShortDateString())">
+                    <span class="add-on glyphicon glyphicon-calendar"></span>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <a data-trigger="hover" data-toggle="tooltip" data-placement="bottom" title="Next Day" class="helptip btn btn-default btn-xs pull-right" href="@Url.Action("Index", new { startTime = Model.StartTime.AddDays(1) })"><span class="glyphicon glyphicon-fast-forward"></span></a>
+                <a data-trigger="hover" data-toggle="tooltip" data-placement="bottom" title="Next Hour" class="helptip btn btn-default btn-xs pull-right" href="@Url.Action("Index", new { startTime = Model.StartTime.AddHours(1) })"><span class="glyphicon glyphicon-step-forward"></span></a>
+            </div>
+        </div>
+
+        <div class="row header">
+            <div class="col-xs-2">
+                <div class="pull-left"><span>Location</span></div>
+            </div>
+            <div class="col-xs-10">
+                @for (var timesteps = Model.StartTime; timesteps < Model.StartTime.AddHours(Model.HoursToDisplay); timesteps = timesteps.AddMinutes(60))
+                {
+                    <div data-startoffset="0" data-cols="4" class="timespan">
+                        @(timesteps.ToString("h tt"))
+                    </div>
+                }
+            </div>
+        </div>
+
+        @foreach (var l in Model.Locations)
+        {
+            var reservations = Model.Reservations.Where(r => r.Locations.Contains(l));
+
+            <div class="row">
+                <div class="col-xs-2"><span>@l.name (@l.maxOccupancy)</span></div>
+                @for (var timesteps = Model.StartTime; timesteps < Model.StartTime.AddHours(Model.HoursToDisplay); timesteps = timesteps.AddMinutes(Model.MinuteIncrements))
+                {
+                    var nowreservations = reservations.Where(r => r.startTime <= timesteps && r.endTime > timesteps).ToList();
+                    if (nowreservations.Count() > 0)
+                    {
+                        var includedreservations = reservations.Where(r => r.startTime >= nowreservations.Min(nr => nr.startTime) && r.startTime < nowreservations.Max(nr => nr.endTime) && !nowreservations.Contains(r)).ToList();
+                        nowreservations = nowreservations.Concat(includedreservations).ToList();
+                        var min = Helpers.Max(nowreservations.Min(nr => nr.startTime), Model.StartTime);
+                        var max = nowreservations.Max(ne => ne.endTime);
+                        var timejump = max.Subtract(min).TotalMinutes;
+                        if (nowreservations.Count() > 1)
+                        {
+                            <div data-startoffset="@((nowreservations.Min(nr => nr.startTime) - Model.StartTime).TotalMinutes / 15)" data-cols="@(Math.Ceiling(timejump / 15))" data-trigger="hover" data-toggle="tooltip" data-placement="bottom" title="@String.Join(" -vs- ", nowreservations.Select(nr => nr.Event.name + " (" + nr.Event.owner + ")").ToArray())" class="eventdetail label label-danger @(timesteps.Minute == 0 ? "hour" : string.Empty) timespan" id="@(timesteps.ToBinary().ToString())">
+                                <a id="cLabel" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                                    <div class="eventtitle">
+                                        <span>Conflict<br />@(String.Join(" -vs- ", nowreservations.Select(nr => nr.Event.name + "(" + Helpers.GetUserShortName(nr.Event.owner) + ")").ToArray()))</span>
+                                    </div>
+                                </a>
+                                    @if (User.IsScheduler())
+                                    {
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="cLabel">
+                                            @foreach (var reservation in nowreservations.OrderBy(nr => nr.startTime))
+                                            {
+                                                <li><a href="@Url.Action("Edit", "Reservations", new { id = reservation.reservationId })">Edit @(reservation.Event.name) (@Helpers.GetUserShortName(reservation.Event.owner))</a></li>
+                                            }
+                                        </ul>
+                                    }
+                                @*<a href="@Url.Action("Conflict", "EventViewModel", new { ids = String.Join(",", nowreservations.Select(nr => nr.reservationId).ToArray()) })">
+                                    <span>Conflict<br />@(String.Join(" -vs- ", nowreservations.Select(nr => nr.Event.name + "(" + nr.Event.owner + ")").ToArray()))</span>
+                                </a>*@
+                            </div>
+                        }
+                        else
+                        {
+                            var currentReservation = nowreservations.FirstOrDefault();
+                            List<string> options = new List<string>();
+                            if (currentReservation.Options.Select(o => o.optionId).Contains(1)) { options.Add("beverage"); }
+                            if (currentReservation.Options.Select(o => o.optionId).Contains(4)) { options.Add("food"); }
+                            if (currentReservation.Options.Select(o => o.optionId).Contains(6)) { options.Add("outofservice"); }
+                            var isnew = nowreservations.FirstOrDefault().modified.HasValue ? nowreservations.FirstOrDefault().modified.Value.AddMinutes(60) > DateTime.Now : false;
+                            var numAttendees = Helpers.GetTotalAttendees(currentReservation.attendeeCountDGS, currentReservation.attendeeCountNonDGS);
+                            <div data-startoffset="@((currentReservation.startTime - Model.StartTime).TotalMinutes / 15)" data-cols="@(Math.Ceiling(timejump / 15))" title="@String.Join(" - ", Helpers.GetUserShortName(currentReservation.Event.owner), currentReservation.Event.name, numAttendees + " attendees")" class="@(String.Join(" ", options)) eventdetail label label-primary @(timesteps.Minute == 0 ? "hour" : string.Empty) timespan" id="@(timesteps.ToBinary().ToString())">
+                                <div>
+                                    <a id="dLabel" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                                        <div class="eventtitle">
+                                            <span class="@(isnew ? "newitem" : "")">                                          
+                                                @String.Join(" - ", Helpers.GetUserShortName(currentReservation.Event.owner), currentReservation.Event.name, numAttendees) 
+                                            </span>
+                                        </div>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                        @if (User.IsHospitality() || User.IsScheduler() || User.IsVisitor())
+                                        {
+                                            <li role="presentation" class="dropdown-header">Reservation</li>
+                                            <li><a href="@Url.Action("Details", "Reservations", new { id = currentReservation.reservationId })">&raquo; View</a></li>
+                                        }
+                                        @if (User.IsHospitality())
+                                        {
+                                            <li><a href="@Url.Action("HospitalityEdit", "Reservations", new { id = currentReservation.reservationId })">&raquo; Edit</a></li>
+                                        }
+                                        @if (User.IsScheduler())
+                                        {
+                                            <li><a href="@Url.Action("Edit", "Reservations", new { id = currentReservation.reservationId })">&raquo; Edit</a></li>
+                                            <li role="presentation" class="dropdown-header">Event</li>
+                                            <li><a href="@Url.Action("Details", "Events", new { id = currentReservation.eventId })">&raquo; View</a></li>
+                                            <li><a href="@Url.Action("Edit", "Events", new { id = currentReservation.eventId })">&raquo; Edit</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                        timesteps = Helpers.RoundUp(timesteps.AddMinutes(timejump - Model.MinuteIncrements), TimeSpan.FromMinutes(Model.MinuteIncrements));
+                    }
+                    else
+                    {
+                        <div data-cols="1" data-trigger="hover" data-delay='{"show":"1000", "hide":"0"}' data-html="true" data-toggle="tooltip" data-placement="auto" title="@(timesteps.ToShortDateString() + " " + timesteps.ToShortTimeString() + "<br/>" + l.name)" data-time="@timesteps" data-room="@l.locationId" class="@(timesteps < DateTime.Now ? "bg-disabled" : "") emptytime timespan @(timesteps.Minute == 0 ? "hour" : string.Empty)" id="@(timesteps.ToBinary().ToString())"></div>
+                    }
+                }
+            </div>
+        }
+
+    </div>
+    <div class="row hidden-print">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <p>Key</p>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-2 label-primary text-center">Regular</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 outofservice text-center">Out Of Service</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 beverage text-center">Beverage</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 label-primary beverage food text-center">Food</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row hidden-print">
+        <div class="container">
+            <div class="checkbox">
+                <label for="autorefresh"><input type="checkbox" name="autorefresh" checked="checked" />Auto refresh every 60 seconds?</label>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/bootstrapdatepicker")
+    <script type="text/javascript">
+        var hoursToDisplay = @(Model.HoursToDisplay);
+        var intervalMgmt = (function (intId) {
+            var start = function (cb, time) {
+                intId = setInterval(cb, time);
+            };
+            var stop = function () {
+                clearInterval(intId);
+            };
+            return { start: start, stop: stop };
+        })();
+
+        $(window).resize(function() {
+            sizeHours();
+        });
+        $(document).ready(function() {
+            sizeHours();
+            $('#dp3').datepicker("setDate", new Date("@(Model.StartTime.ToString("MM-dd-yyyy"))"));
+        });
+        $(function () {
+            $('#dp3').datepicker({
+                autoclose: true,
+                todayBtn: "linked",
+                todayHighlight: true
+            }).on("changeDate", function (ev, date) {
+                var d = ev.date;
+                d.setHours(6);
+                window.location.href = window.location.pathname + "?startTime=" + ev.date.formatMMDDYYYYHHMMSS();
+            });
+
+            $('.dropdown-toggle').dropdown();
+            $("input[name=autorefresh]").on('change', function () {
+                if (!$(this).is(":checked"))
+                {
+                    intervalMgmt.stop();
+                }
+                else
+                {
+                    startAutoReload(60);
+                }
+            })
+            startAutoReload(60);
+            //$(".eventdetail").tooltip();
+            $(".helptip").tooltip({
+                "show": 100
+            });
+            $(".eventdetail").tooltip({
+                "show": 100,
+                "trigger": "hover",
+                "placement": "auto left"
+            }).on('blur',function() {
+                $(this).tooltip('hide');
+            });
+            $(".emptytime").tooltip();
+            var startTime, endTime, startRoom, endRoom;
+            var ismousedown = false;
+            @if (User.IsScheduler())
+            {
+                @: $(".emptytime").on('click', function () {
+                                    @: intervalMgmt.stop();
+                                    @: if (startTime == null && startRoom == null)
+                                            @: {
+                                                @: $(this).toggleClass('bg-success');
+                                                @: startTime = new Date($(this).data("time"));
+                                                @: startRoom = $(this).data("room");
+                                            @: }
+                                            @: else
+                                            @: {
+                                                @: endRoom = $(this).data("room");
+                                                @: endTime = new Date((addMinutes(new Date($(this).data("time")), 15)));
+                                                @: if (startRoom == endRoom && endTime >= startTime) {
+                                                            @: window.location.href = "/Events/Create?startTime=" + startTime.toLocaleDateString() + " " + startTime.toLocaleTimeString() + "&endTime=" + endTime.toLocaleDateString() + " " + endTime.toLocaleTimeString() + "&roomNum=" + endRoom;
+                                                        @: }
+                                                        @: else {
+                                                            @: $(".emptytime").removeClass('bg-success');
+                                                            @: startTime = null;
+                                                            @: endTime = null;
+                                                            @: startRoom = null;
+                                                            @: endRoom = null;
+                                                        @: }
+                                                @: startAutoReload(60);
+                                            @: }
+                                @: })
+
+            }
+        })
+        function addMinutes(date, minutes) {
+            return new Date(date.getTime() + minutes * 60000);
+        }
+        function startAutoReload(seconds) {
+            intervalMgmt.start(function () {
+                location.reload();
+            }, seconds * 1000);
+        }
+        function sizeHours() {
+            $(".calendar").fadeIn();
+            $(".timespan").each(function(i, obj) {
+                var totalcolumns = @(Model.HoursToDisplay * 4);
+                var startoffset = $(obj).data('startoffset');
+                var columns = $(obj).data('cols');
+                if (startoffset + columns > totalcolumns)
+                {
+                    columns = totalcolumns - startoffset;
+                }
+                var hourWidth = Math.floor(($(".col-xs-10").innerWidth() - 10) / (hoursToDisplay * 4));
+                $(obj).css({"width": hourWidth * columns + "px"});
+            });
+        }
+        Date.prototype.formatMMDDYYYYHHMMSS = function () {
+            return (this.getMonth() + 1) +
+            "/" + this.getDate() +
+            "/" + this.getFullYear() +
+            " " + this.getHours() +
+            ":" + this.getMinutes() +
+            ":" + this.getSeconds();
+        }
+    </script>
+}

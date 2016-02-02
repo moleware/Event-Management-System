@@ -1,0 +1,58 @@
+@using EventManagementSystem.Utility
+@model DateTime?
+
+@{
+    DateTime dt;
+    string dataformat = ViewBag.DataFormat != null ? ViewBag.DataFormat : string.Empty;
+    string pickerid = ViewBag.PickerId ?? string.Empty;
+    string formgroupclass = "form-group" + Html.ValidationErrorFor(m => m, " has-error");
+    if (Model.HasValue)
+    {
+        dt = (DateTime)Model;
+    }
+    else
+    {
+        dt = DateTime.Now;
+    }
+    var htmlAttributes = new RouteValueDictionary();
+    htmlAttributes.Add("data-format", dataformat);
+    htmlAttributes.Add("data-date", ViewBag.DataDate != null ? ViewBag.DataDate : string.Empty);
+    htmlAttributes.Add("type", "datetime");
+    htmlAttributes.Add("data-date-minDate", ViewBag.MinDate != null ? ViewBag.MinDate : string.Empty);
+
+    if (ViewBag.@class != null)
+    {
+        htmlAttributes.Add("class", "form-control " + ViewBag.@class);
+    }
+    else
+    {
+        htmlAttributes.Add("class", "form-control");
+    }
+    if (ViewBag.AddPicker != null && ViewBag.AddPicker == "datetime")
+    {
+        formgroupclass += " datetimepicker input-group";
+    }
+    else if (ViewBag.AddPicker != null && ViewBag.AddPicker == "date")
+    {
+        formgroupclass += " datepicker input-group";
+    }
+
+}
+
+<div class="@(formgroupclass)" id="@(pickerid)">
+    @if (ViewBag.ShowLabel == null || ViewBag.ShowLabel == true) {
+        @Html.LabelFor(m => m, new { @class = "control-label" })
+    }
+    <div class="input-group">
+        @*@Html.TextBoxFor(m => m, htmlAttributes)*@
+        @Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue, htmlAttributes)
+        @if (ViewBag.AddPicker != null && ViewBag.AddPicker == "datetime")
+        {
+            <span class="input-group-addon add-on">
+                <span class="glyphicon glyphicon-calendar">
+                </span>
+            </span>
+        }
+    </div>
+    @Html.ValidationMessageFor(m => m, null, new { @class="help-block" })
+</div>

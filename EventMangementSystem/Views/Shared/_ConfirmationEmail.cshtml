@@ -1,0 +1,126 @@
+﻿@model EventManagementSystem.Models.Event
+
+<style>
+    .panel {
+        margin-bottom: 1em;
+        color: #333333;
+        clear: both;
+    }
+
+    .panel-heading {
+        font-weight: bold;
+        background-color: #333333;
+        color: #eeeeee;
+        padding: 1em;
+        clear: both;
+    }
+
+    .panel-body {
+        padding: 1em;
+        clear: both;
+    }
+
+        .panel-body p, .panel-body > div {
+            margin-left: 1em;
+        }
+
+    table tr td {
+        padding: 0 1em;
+    }
+</style>
+
+<p>This is to confirm your reservation for the event <b>&quot;@Model.name&quot;</b></p>
+<div class="panel">
+    <div class="panel-heading">
+        <p>Details:</p>
+    </div>
+    <div class="panel-body">
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>@Model.name</td>
+            </tr>
+            <tr>
+                <td>Total Attendees</td>
+                <td>@Helpers.GetTotalAttendees(Model.attendeeCountDGS, Model.attendeeCountNonDGS)</td>
+            </tr>
+            <tr>
+                <td>DGS Attendees</td>
+                <td>@Helpers.GetIntOrZero(Model.attendeeCountDGS)</td>
+            </tr>
+            <tr>
+                <td>Non-DGS Attendees</td>
+                <td>@Helpers.GetIntOrZero(@Model.attendeeCountNonDGS)</td>
+            </tr>
+            <tr>
+                <td>Owner</td>
+                <td>@Helpers.GetUser(Model.owner).shortName</td>
+            </tr>
+            <tr>
+                <td>Organizer</td>
+                <td>@Helpers.GetUser(Model.organizer).shortName</td>
+            </tr>
+            <tr>
+                <td>Start Time</td>
+                <td>@Model.startTime.ToShortDateString() @Model.startTime.ToShortTimeString()</td>
+            </tr>
+            <tr>
+                <td>End Time</td>
+                <td>@Model.endTime.ToShortDateString() @Model.endTime.ToShortTimeString()</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class='panel'>
+    <div class='panel-heading'>
+        <p>Notes:</p>
+    </div>
+    <div class='panel-body'>
+        @if (Model.notes != null)
+        {
+            <p>@Html.Raw(Model.notes.Replace("\n", "<br />"))</p>
+        }
+    </div>
+</div>
+<div class='panel'>
+    <div class='panel-heading'>
+        <p>Options:</p>
+    </div>
+    <div class='panel-body'>
+        @foreach (var opt in Model.Options.Select(o => o.name))
+        {
+            <p>@(opt)</p>
+        }
+    </div>
+</div>
+<div class='panel'>
+    <div class='panel-heading'>
+        <p>Reservation(s):</p>
+    </div>
+    <div class='panel-body'>
+        @foreach (var res in Model.Reservations.OrderBy(r => r.startTime).Select(r => new
+        {
+            startTime = r.startTime,
+            endTime = r.endTime,
+            ReservationLocations = r.Locations,
+            ReservationOptions = r.Options,
+            ReservationNotes = r.ReservationNotes
+        }))
+        {
+            <div class="panel">
+                <div class="panel-heading">
+                    <p>@res.startTime.ToShortDateString()</p>
+                </div>
+                <div class="panel-body">
+                    <p>@Html.Raw(String.Join(" &mdash; ", res.startTime.ToShortTimeString(), res.endTime.ToShortTimeString()))</p>
+                    <p>@Html.Raw(String.Join(", ", res.ReservationLocations.Select(rl => rl.name)))</p>
+                    <p>@Html.Raw(String.Join(", ", res.ReservationOptions.Select(ro => ro.name)))</p>
+                    @foreach (var note in res.ReservationNotes)
+                    {
+                        <p>@Html.Raw(String.Format("<strong>{0}</strong>: {1}", note.created.ToShortDateString(), note.note))</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

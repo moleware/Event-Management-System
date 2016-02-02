@@ -1,0 +1,25 @@
+﻿@model List<EventManagementSystem.Models.Reservation>
+
+@{
+    ViewBag.Title = "Conflict";
+}
+
+<div class="row">
+    @foreach (var res in Model)
+    {
+        <div class="col-xs-@(Math.Floor(12.0 / Model.Count()))">
+            <div class="row">@res.Event.name</div>
+            <div class="row">@(Helpers.GetUserShortName(res.Event.owner))</div>
+            <div class="row">@(String.Join(",", res.Locations.Select(rl => rl.name).ToArray()))</div>
+            <div class="row">@res.startTime</div>
+            <div class="row">@res.endTime</div>
+            <div class="row">
+                <div class="btn btn-default">
+                    <a href="@Url.Action("Edit", "Reservations", new { id = res.reservationId })">
+                        Modify this Reservation
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

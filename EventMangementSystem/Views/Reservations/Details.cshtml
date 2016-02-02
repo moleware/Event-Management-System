@@ -1,0 +1,300 @@
+﻿@model EventManagementSystem.Models.Reservation
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="row">
+    <div class="container">
+        <div class="col-xs-12">
+            <div id="ConfirmationMessage" class="hide alert alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <span id="MessageText"></span>
+            </div>
+        </div>
+
+        <div class="col-xs-12 modal fade" id="NoteModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title">New Note</h4>
+                    </div>
+                    <div class="modal-body">
+                        <textarea class="form-control" id="NewNote" name="NewNote" rows="5"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="SaveNoteModal" type="button" data-dismiss="modal" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <h2>@Model.Event.name</h2>
+                <div class="form-group col-sm-12">
+                    <div id="btnConfirmation" class="btn btn-primary">Send Confirmation</div>
+                </div>
+                <div class="form-group col-sm-12">
+                    <div class="modal fade" id="ModalConfirmation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Confirmation Email</h4>
+                                    <button type="button" class="send btn btn-primary">Send Email</button>
+                                </div>
+                                <div class="clearfix modal-body">
+                                    <div class="checkbox col-xs-12">
+                                        <label>
+                                            <input type="checkbox" id="IsAddOn" name="IsAddOn" /><span>Add On?</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group col-xs-12">
+                                        <input class="form-control" type="text" id="AdditionalText" name="AdditionalText" placeholder="Additional Text" />
+                                    </div>
+                                    <div class="form-group col-xs-12">
+                                        <div class="col-xs-12">
+                                            <a class="btn btn-primary" data-toggle="collapse" href="#EmailRecipients" aria-expanded="false" aria-controls="EmailRecipients">
+                                                Modify Recipients
+                                            </a>
+                                        </div>
+                                        <div class="collapse" id="EmailRecipients">
+                                            <div id="RecipientList" class="col-xs-12">
+                                                <div data-email="@(Helpers.GetUser(User.Identity).email)" class="pull-left alert alert-success alert-dismissible fade in" role="alert">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <p>@(Helpers.GetUser(User.Identity).shortName)</p>
+                                                </div>
+                                                <div data-email="@(Helpers.GetUser(Model.Event.organizer).email)" class="pull-left alert alert-success alert-dismissible fade in" role="alert">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <p>@(Helpers.GetUser(Model.Event.organizer).shortName)</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <input type="text" name="AddEmailRecipientField" id="AddEmailRecipientField" placeholder="Add Recipient" />
+                                            </div>
+                                            <div id="RecipientSelections" class="col-xs-12">
+
+                                            </div>
+                                        </div>
+                                   </div>
+                                    <hr />
+                                    <div id="FormMail" class="col-xs-12">
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" class="send btn btn-primary">Send Email</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right col-xs-12 col-sm-6">
+                <h3>@Model.startTime.ToShortDateString()</h3>
+                <h3>@Model.startTime.ToShortTimeString() - @Model.endTime.ToShortTimeString()</h3>
+                <h3>@String.Join(", ", Model.Locations.OrderBy(rl => rl.name).Select(rl => rl.name))</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h2 class="panel-title">Details</h2>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><strong>Owner: </strong>@(Helpers.GetUserShortName(Model.Event.owner))</li>
+                                <li class="list-group-item"><strong>Organizer: </strong>@(Helpers.GetUserShortName(Model.Event.organizer))</li>
+                                <li class="list-group-item"><strong>Attendee Count: </strong>@(Helpers.GetTotalAttendees(Model.attendeeCountDGS, Model.attendeeCountNonDGS))</li>
+                                <li class="list-group-item"><strong>DGS Attendee Count: </strong>@(Helpers.GetIntOrZero(Model.attendeeCountDGS))</li>
+                                <li class="list-group-item"><strong>Non-DGS Attendee Count: </strong>@(Helpers.GetIntOrZero(Model.attendeeCountNonDGS))</li>
+                                <li class="list-group-item"><strong>Options: </strong>@String.Join(", ", Model.Options.Select(ro => ro.name).OrderBy(x => x).Distinct())</li>
+                                <li class="list-group-item"><strong>Event Notes: </strong><p>@Html.Raw((Model.Event.notes ?? "").ToString().Replace("\r\n", "<br/>"))</p></li>
+                            </ul>
+                        </div>
+                        <div class="panel-footer">
+                            <p>Created: @(Model.created.HasValue ? Model.created.Value.ToShortDateString() : "") by @(Helpers.GetUserShortName(Model.createdBy)) </p>
+                            <p>Last Modified: @(Model.modified.HasValue ? Model.modified.Value.ToShortDateString() : "") by @(Helpers.GetUserShortName(Model.modifiedBy)) </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div id="NotesPanel" class="panel panel-default">
+                    <div class="clearfix panel-heading">
+                        <h2 class="pull-left panel-title">Reservation Notes</h2>
+                        @if (User.IsScheduler() || User.IsHospitality())
+                        {
+                            <button data-toggle="modal" data-target="#NoteModal" id="AddNote" name="AddNote" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></button>
+                        }
+                    </div>
+                    <div class="panel-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+    var reservationid = @Model.reservationId;
+
+    $(document).ready(function() {
+        LoadNotes(reservationid);
+        LoadEmailBody(reservationid);
+        var thread = null;
+        $('#AddEmailRecipientField').keyup(function() {
+            clearTimeout(thread);
+            var target = $(this);
+            if (target.val().length >= 3)
+            {
+                thread = setTimeout(function() { findMember(target.val()); }, 100); 
+            }
+        });
+    });
+
+    $(function() {
+        $('#NoteModal').on('shown.bs.modal', function () {
+            $('#NewNote').focus();
+        })
+
+        $("#SaveNoteModal").on('click', function () {
+            $(this).addClass('disabled');
+            SaveReservationNote();
+            $('#SaveNoteModal').removeClass('disabled');
+            $('#NoteModal').modal('dismiss');
+        });
+
+        $('#btnConfirmation').on('click', function () {
+            $('#ModalConfirmation').modal('show')
+        });
+
+        $('#ModalConfirmation button.send').on('click', function() {
+            $(this).addClass('disabled');
+            var isAddOn = $("#ModalConfirmation #IsAddOn").prop('checked');
+            var body = "<p>" + $("#ModalConfirmation #AdditionalText").val() + "</p>" + $('#ModalConfirmation #FormMail').html();
+            var recipients = $("#EmailRecipients #RecipientList > div").map(function() {return $(this).data("email")}).get();
+            SendConfirmationEmail($('#ModalConfirmation'), $("#ModalConfirmation #IsAddOn"), reservationid, body, isAddOn, recipients);
+        });
+    });
+
+    function findMember(str) {
+        $.ajax({
+            url: '/Reservations/_FindRecipients',
+            data: {q: str},
+            type: "GET"
+        }).done(function (data) {
+            var r = $.parseJSON(data);
+            $("#RecipientSelections").html("");
+            $.each(r, function() {
+                AddRecipientSelection(this.name, this.email);
+            });
+            CreateAlert(r.message, r.class);
+        }).error(function (e) {
+            CreateAlert(e, "danger");
+        }).always(function () {
+            sendButton.removeClass('disabled');
+            modalDialog.modal('hide')
+        });    
+
+    }
+    function AddRecipientSelection (name,email) {
+        var html = "<div onclick='javascript:AddRecipient(\"" + name + "\",\"" + email + "\");' data-email='" + email + "' class='btn btn-default btn-sm pull-left'><p>" + name + "</p></div>";
+        $("#RecipientSelections").append(html);
+    }
+
+    function AddRecipient (name,email){
+        var html = "<div data-email=" + email + " class='pull-left alert alert-success alert-dismissible fade in' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><p>" + name + "</p></div>";
+        $("#EmailRecipients #RecipientList").append(html);
+    }
+
+    function SendConfirmationEmail(modalDialog, sendButton, reservationid, body, isAddOn, recipients) {
+        $.ajax({
+            url: '/Reservations/_SendConfirmationEmail',
+            data: {reservationId: reservationid, body: body, isAddOn: isAddOn, recipients: recipients},
+            type: "POST"
+        }).done(function (data) {
+            var r = $.parseJSON(data);
+            CreateAlert(r.message, r.class);
+        }).error(function (e) {
+            CreateAlert(e, "danger");
+        }).always(function () {
+            sendButton.removeClass('disabled');
+            modalDialog.modal('hide')
+        });    
+    }
+
+    function LoadEmailBody()
+    {
+        $.ajax({
+            url: '/Reservations/_ReservationConfirmationEmail',
+            data: {id: reservationid},
+            type: "GET",
+            cache: false
+        }).done(function (data) {
+            $('#ModalConfirmation #FormMail').html(data);
+        });
+    };
+
+    function SaveReservationNote() {
+        var d = @(DateTime.Now.ToShortDateString());
+        var note = $("#NewNote").val();
+        $.ajax({
+            url: '/Reservations/_AddNote',
+            data: { date: d, id: reservationid, note: note },
+            type: "POST"
+        }).done(function (data) {
+            var r = $.parseJSON(data);
+            CreateAlert(r.message, r.class);
+            $("#NewNote").val("");
+        }).error(function (e) {
+            CreateAlert(e, "danger");
+        }).complete(function() {
+            LoadNotes(reservationid);            
+        });
+    
+    };
+
+    function DeleteReservationNote(reservationid, noteid) {
+        $.ajax({
+            url: '/Reservations/_DeleteReservationNote',
+            data: {id: noteid},
+            type: "POST"
+        }).done(function (data) {
+            var r = $.parseJSON(data);
+            CreateAlert(r.message, r.class);
+        }).error(function (e) {
+            CreateAlert(e, "danger");
+        }).complete(function() {
+            LoadNotes(reservationid);
+        });
+    }
+
+    function LoadNotes(reservationid)
+    {
+        $.ajax({
+            url: '/Reservations/_GetNotes',
+            data: { id: reservationid },
+            type: "GET",
+            cache: false
+        }).done(function (data) {
+            $("#NotesPanel .panel-body").html(data);
+        }).complete(function () {
+            $("span.deleteNote").on('click', function() {
+                var noteid = $(this).data("id");
+                DeleteReservationNote(reservationid, noteid);
+            });
+        }).error(function (e) {
+            $("#NotesPanel .panel-body").html(e);
+        });
+    }
+    </script>
+}

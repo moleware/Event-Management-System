@@ -1,0 +1,66 @@
+﻿@model IEnumerable<EventManagementSystem.Models.Event>
+
+<div class="col-xs-12">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>
+                    Event
+                </td>
+                <td>
+                    Owner
+                </td>
+                <td>
+                    Organizer
+                </td>
+                <td>
+                    Action
+                </td>
+        </thead>
+        <tbody>
+            @foreach (var ev in Model)
+            {
+                <tr>
+                    <td>
+                        <strong>@ev.name</strong>
+                    </td>
+                    <td>
+                        @Helpers.GetUserShortName(ev.owner)
+                    </td>
+                    <td>
+                        @Helpers.GetUserShortName(ev.organizer)
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Details", "Events", new { id = ev.eventId })" class="pull-right btn btn-default">View Event</a>
+                        @if (User.IsScheduler())
+                        {
+                            <a href="@Url.Action("Edit", "Events", new { id = ev.eventId })" class="pull-right btn btn-default">Edit Event</a>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <table class="table">
+                            @foreach (var r in ev.Reservations)
+                            {
+                                <tr>
+                                    <td>@r.startTime.ToShortDateString()</td>
+                                    <td>@(String.Format("{0} - {1}", r.startTime.ToShortTimeString(), r.endTime.ToShortTimeString()))</td>
+                                    <td>@(String.Join(", ", r.Locations.OrderBy(l => l.name).Select(l => l.name)))</td>
+                                    <td>
+                                        <a href="@Url.Action("Details", "Reservations", new { id = r.reservationId })" class="pull-right btn btn-default">View Reservation</a>
+                                        @if (User.IsScheduler())
+                                        {
+                                            <a href="@Url.Action("Edit", "Reservations", new { id = r.reservationId })" class="pull-right btn btn-default">Edit Reservation</a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

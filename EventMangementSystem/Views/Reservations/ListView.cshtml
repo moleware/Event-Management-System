@@ -1,0 +1,99 @@
+﻿@model IEnumerable<EventManagementSystem.Models.Reservation>
+
+@{
+    ViewBag.Title = "ListView";
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Options</td>
+            <td>Time</td>
+            <td>Location(s)</td>
+            <td>Name</td>
+            <td>Attendee Count</td>
+            <td>Owner</td>
+            <td>Organizer</td>
+            <td>Notes</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>
+                    @foreach (var o in r.Options)
+                    {
+                        var optionString = "glyphicon ";
+                        var optionDesc = "";
+                        switch (o.optionId)
+                        {
+                            case 1:
+                                //Beverage
+                                optionString += "glyphicon-filter";
+                                optionDesc = "Beverage Setup";
+                                break;
+                            case 2:
+                                //IT
+                                optionString += "glyphicon-hdd";
+                                optionDesc = "IT Setup";
+                                break;
+                            case 3:
+                                //Office Services
+                                optionString += "glyphicon-paperclip";
+                                optionDesc = "Office Services";
+                                break;
+                            case 4:
+                                //Food
+                                optionString += "glyphicon-cutlery";
+                                optionDesc = "Food";
+                                break;
+                            case 5:
+                                //Facilities
+                                optionString += "glyphicon-blackboard";
+                                optionDesc = "Facilities";
+                                break;
+                        }
+                        <span class="@optionString" title="@optionDesc"></span>
+                    }
+                </td>
+                <td>
+                    <strong>@r.startTime.ToShortTimeString() - @r.endTime.ToShortTimeString()</strong>
+                </td>
+                <td>
+                    @String.Join(", ", r.Locations.Select(rl => rl.name))
+                </td>
+                <td>
+                    @r.Event.name
+                </td>
+                <td>
+                    @Helpers.GetTotalAttendees(r.attendeeCountDGS, r.attendeeCountNonDGS)
+                </td>
+                <td>
+                    @Helpers.GetUserShortName(r.Event.owner)
+                </td>
+                <td>
+                    @Helpers.GetUserShortName(r.Event.organizer)
+                </td>
+                <td>
+                    @Html.Raw(String.Join("</p><p>", r.ReservationNotes.Select(rn => Html.Raw(rn.note != null ? rn.note.Replace("\r\n", "<br/>") : ""))))
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@*<ul class="list-group">
+    @foreach (var r in Model)
+    {
+        <li class="list-group-item clearfix">
+            <div class="col-xs-2">
+                <p><strong>@r.startTime.ToShortTimeString() - @r.endTime.ToShortTimeString()</strong></p>
+                <p>@String.Join(", ", r.Locations.Select(rl => rl.name))</p>
+            </div>
+            <div class="col-xs-10">
+                <p><strong>@r.Event.name</strong></p>
+                <p>@Html.Raw(String.Join("</p><p>", r.ReservationNotes.Select(rn => Html.Raw(rn.note != null ? rn.note.Replace("\r\n", "<br/>") : ""))))</p>
+            </div>
+        </li>
+    }
+</ul>*@

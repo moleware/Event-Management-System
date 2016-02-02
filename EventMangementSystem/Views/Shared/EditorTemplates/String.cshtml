@@ -1,0 +1,33 @@
+@using EventManagementSystem.Utility
+@model object
+
+@{
+    var htmlAttributes = new RouteValueDictionary();
+    if (ViewBag.@class != null)
+    {
+        htmlAttributes.Add("class", "form-control " + ViewBag.@class);
+    }
+    else
+    {
+        htmlAttributes.Add("class", "form-control");
+    }
+    if (ViewBag.@type != null)
+    {
+        htmlAttributes.Add("type", ViewBag.@type);
+    }
+    if (ViewBag.placeholder != null)
+    {
+        htmlAttributes.Add("placeholder", ViewBag.placeholder);
+    }
+}
+
+<div class="control-group">
+    @Html.LabelFor(m => m, new { @class = "control-label" })
+    @Html.TextBoxFor(m => m, null, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m, null, new { @class = "help-block" })
+    @*@Html.TextBox(
+        "",
+        ViewData.TemplateInfo.FormattedModelValue,
+        htmlAttributes)*@
+    @*@Html.ValidationMessageFor(m => m, null, new { @class = "help-block" })*@
+</div>

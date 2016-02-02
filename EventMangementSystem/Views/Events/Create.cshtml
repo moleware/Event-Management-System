@@ -1,0 +1,653 @@
+﻿@model EventManagementSystem.Models.EventViewModel
+
+@{
+    ViewBag.Title = "Create New Event";
+}
+<div id="Alert" class="navbar navbar-fixed-bottom">
+</div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "CreateEventForm" }))
+{
+    @*@Html.AntiForgeryToken()*@
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <input type="hidden" name="Event.requestDate" value="@DateTime.Now" />
+    <input type="hidden" name="Event.eventStatusId" value="1" />
+    <input type="hidden" name="Event.created" value="@DateTime.Now" />
+    <input type="hidden" name="Event.createdBy" value="@Helpers.GetUser(User.Identity).loginName" />
+    <input type="hidden" name="Event.modified" value="@DateTime.Now" />
+    <input type="hidden" name="Event.modifiedBy" value="@Helpers.GetUser(User.Identity).loginName" />
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>1. Event Details</h2>
+            </div>
+            <div class="panel-body">
+                <div class="form-group col-sm-12">
+                    @Html.EditorFor(model => model.Event.name, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="form-group col-sm-12">
+                    @Html.EditorFor(model => model.Event.attendeeCountDGS, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="form-group col-sm-12">
+                    @Html.EditorFor(model => model.Event.attendeeCountNonDGS, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="col-sm-12">
+                    @Html.EditorFor(model => model.Event.startTime, new { AddPicker = "datetime", ShowLabel = true, PickerId = "startTimePicker" })
+                </div>
+                <div class="col-sm-12">
+                    @Html.EditorFor(model => model.Event.endTime, new { AddPicker = "datetime", ShowLabel = true, PickerId = "endTimePicker" })
+                </div>
+                <div class="form-group col-sm-12">
+                    <label for="owner" class="control-label">Owner</label>
+                    @Html.DropDownList("Event.owner", Model.UserList, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Event.owner, null, new { @class = "help-block" })
+
+                </div>
+                <div class="form-group col-sm-12">
+                    <label for="organizer" class="control-label">Organizer</label>
+                    @Html.DropDownList("Event.organizer", Model.UserList, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Event.organizer, null, new { @class = "help-block" })
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="Locations" class="control-label">Location(s)</label>
+                    <div>
+                        @Html.ListBox("EventLocations", Model.LocationList, new { @class = "form-control", size = (Model.LocationList).Count() })
+                    </div>
+                </div>
+                <div id="RoomImageContainer" class="form-group col-sm-6">
+                </div>
+                <div class="form-group col-sm-12">
+                    <label for="options" class="control-label">Option(s)</label>
+                    <div class="well">
+                        @foreach (var o in Model.OptionList)
+                        {
+                            <div class="checkbox" id="EventOptionsCheckboxList">
+                                <label>
+                                    <input type="checkbox" name="Options" value="@o.Value" checked="@o.Selected" />
+                                    @o.Text
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="form-group col-sm-12">
+                    <label for="notes" class="control-label">Notes</label>
+                    @Html.TextAreaFor(model => model.Event.notes, new { @class = "form-control", rows = 5 })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>2. Generate Reservations</h2>
+            </div>
+            <div class="panel-body">
+                <div class="well">
+                    <div class="panel-group" id="RepeatAccordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="HeadingNoRepeat">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#RepeatAccordion" href="#CollapseNoRepeat" aria-expanded="true" aria-controls="CollapseNoRepeat">
+                                        No Repeat
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="CollapseNoRepeat" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="HeadingNoRepeat">
+                                <div class="panel-body">
+                                    <p>Only this single event</p>
+                                    <div class="col-xs-12">
+                                        <div id="GenerateReservationsNoRepeat" class="pull-right btn btn-default btn-sm glyphicon glyphicon-arrow-right"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-heading" role="tab" id="HeadingDaily">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#RepeatAccordion" href="#CollapseDaily" aria-expanded="true" aria-controls="CollapseDaily">
+                                        Daily
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="CollapseDaily" class="panel-collapse collapse" role="tabpanel" aria-labelledby="HeadingDaily">
+                                <div class="panel-body">
+                                    <div class="checkbox col-xs-12">
+                                        <label>
+                                            <input type="checkbox" name="DailyWeekdayOnly" id="DailyWeekdayOnly"> Weekdays Only
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="form-group datetimepicker input-group" id="DailyEndDatePicker">
+                                            <label class="control-label" for="DailyEndDate">Until</label>
+                                            <div class="input-group">
+                                                <input class="form-control" data-date="" data-date-mindate="" data-format="" data-val="true" data-val-date="The field DailyEndDate must be a date." data-val-required="The DailyEndDate field is required." id="DailyEndDate" name="DailyEndDate" type="datetime" value="">
+                                                <span class="input-group-addon add-on">
+                                                    <span class="glyphicon-calendar glyphicon">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <span class="field-validation-valid help-block" data-valmsg-for="DailyEndDate" data-valmsg-replace="true"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div id="GenerateReservationsDailyRepeat" class="pull-right btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-heading" role="tab" id="HeadingWeekly">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#RepeatAccordion" href="#CollapseWeekly" aria-expanded="true" aria-controls="CollapseWeekly">
+                                        Weekly
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="CollapseWeekly" class="panel-collapse collapse" role="tabpanel" aria-labelledby="HeadingWeekly">
+                                <div class="panel-body">
+                                    <p>
+                                        Every&nbsp;
+                                        <select name="WeeklyRepeatFrequency" id="WeeklyRepeatFrequency">
+                                            <option value="1" selected="selected">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                        </select>
+                                        &nbsp; week on:
+                                    </p>
+                                    <div id="WeeklyDOW" class="checkbox col-xs-12">
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="WeeklyDOW" id="WeeklyDOWMonday" value="1"> Monday
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="WeeklyDOW" id="WeeklyDOWTuesday" value="2"> Tuesday
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="WeeklyDOW" id="WeeklyDOWWednesday" value="3"> Wednesday
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="WeeklyDOW" id="WeeklyDOWThursday" value="4"> Thursday
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="WeeklyDOW" id="WeeklyDOWFriday" value="5"> Friday
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="WeeklyDOW" id="WeeklyDOWSaturday" value="6"> Saturday
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="WeeklyDOW" id="WeeklyDOWSunday" value="0"> Sunday
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="form-group datetimepicker input-group" id="WeeklyEndDatePicker">
+                                            <label class="control-label" for="WeeklyEndDate">Until</label>
+                                            <div class="input-group">
+                                                <input class="form-control" data-date="" data-date-mindate="" data-format="" data-val="true" data-val-date="The field WeeklyEndDate must be a date." data-val-required="The WeeklyEndDate field is required." id="WeeklyEndDate" name="WeeklyEndDate" type="datetime" value="">
+                                                <span class="input-group-addon add-on">
+                                                    <span class="glyphicon-calendar glyphicon">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <span class="field-validation-valid help-block" data-valmsg-for="WeeklyEndDate" data-valmsg-replace="true"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div id="GenerateReservationsWeeklyRepeat" class="pull-right btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-heading" role="tab" id="HeadingMonthly">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#RepeatAccordion" href="#CollapseMonthly" aria-expanded="true" aria-controls="CollapseMonthly">
+                                        Monthly
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="CollapseMonthly" class="panel-collapse collapse" role="tabpanel" aria-labelledby="HeadingMonthly">
+                                <div class="panel-body">
+                                    <p>
+                                        Every&nbsp;
+                                        <select name="MonthlyRepeatFrequency" id="MonthlyRepeatFrequency">
+                                            <option value="1" selected="selected">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                        </select>
+                                        &nbsp; month(s) on:
+                                    </p>
+                                    <div class="col-xs-12">
+                                        <div class="radio">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="MonthlyRepeatOption" id="MonthlyRepeatOption1" value="1"> The <span id="MonthlyRepeatOnDate"></span>.
+                                            </label>
+                                        </div>
+                                        <div class="radio" id="MonthlyRepeatOption">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="MonthlyRepeatOption" id="MonthlyRepeatOption2" value="2">
+                                                The&nbsp;
+                                                <select name="MonthlyOccurrence" id="MonthlyOccurrence">
+                                                    <option value="1" selected="selected">First</option>
+                                                    <option value="2">Second</option>
+                                                    <option value="3">Third</option>
+                                                    <option value="4">Fourth</option>
+                                                    <option value="5">Last</option>
+                                                </select>
+                                                &nbsp;
+                                                <select name="MonthlyRepeatDOW" id="MonthlyRepeatDOW">
+                                                    <option value="1" selected="selected">Monday</option>
+                                                    <option value="2">Tuesday</option>
+                                                    <option value="3">Wednesday</option>
+                                                    <option value="4">Thursday</option>
+                                                    <option value="5">Friday</option>
+                                                    <option value="6">Saturday</option>
+                                                    <option value="0">Sunday</option>
+                                                </select>
+                                                &nbsp;of the month
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="form-group datetimepicker input-group" id="MonthlyEndDatePicker">
+                                            <label class="control-label" for="MonthlyEndDate">Until</label>
+                                            <div class="input-group">
+                                                <input class="form-control" data-date="" data-date-mindate="" data-format="" data-val="true" data-val-date="The field MonthlyEndDate must be a date." data-val-required="The MonthlyEndDate field is required." id="MonthlyEndDate" name="MonthlyEndDate" type="datetime" value="">
+                                                <span class="input-group-addon add-on">
+                                                    <span class="glyphicon-calendar glyphicon">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <span class="field-validation-valid help-block" data-valmsg-for="MonthlyEndDate" data-valmsg-replace="true"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div id="GenerateReservationsMonthlyRepeat" class="pull-right btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-heading" role="tab" id="HeadingYearly">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#RepeatAccordion" href="#CollapseYearly" aria-expanded="true" aria-controls="CollapseYearly">
+                                        Yearly
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="CollapseYearly" class="panel-collapse collapse" role="tabpanel" aria-labelledby="HeadingYearly">
+                                <div class="panel-body">
+                                    <p>
+                                        Every&nbsp;
+                                        <input type="text" name="YearlyRepeatFrequency" id="YearlyRepeatFrequency" value="1" />
+                                        &nbsp; year(s) on:
+                                    </p>
+                                    <div class="col-xs-12">
+                                        <div class="radio">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="YearlyRepeatOption" id="YearlyRepeatOption1" value="1"> The <span id="YearlyRepeatOnDate"></span> of <span class="currentStartDateMonth"></span>.
+                                            </label>
+                                        </div>
+                                        <div class="radio">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="YearlyRepeatOption" id="YearlyRepeatOption2" value="2">
+                                                The&nbsp;
+                                                <select name="YearlyOccurrence" id="YearlyOccurrence">
+                                                    <option value="1" selected="selected">First</option>
+                                                    <option value="2">Second</option>
+                                                    <option value="3">Third</option>
+                                                    <option value="4">Fourth</option>
+                                                    <option value="5">Last</option>
+                                                </select>
+                                                &nbsp;
+                                                <select name="YearlyRepeatDOW" id="YearlyRepeatDOW">
+                                                    <option value="1" selected="selected">Monday</option>
+                                                    <option value="2">Tuesday</option>
+                                                    <option value="3">Wednesday</option>
+                                                    <option value="4">Thursday</option>
+                                                    <option value="5">Friday</option>
+                                                    <option value="6">Saturday</option>
+                                                    <option value="0">Sunday</option>
+                                                </select>
+                                                &nbsp;of <span class="currentStartDateMonth"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="form-group datetimepicker input-group" id="YearlyEndDatePicker">
+                                            <label class="control-label" for="YearlyEndDate">Until</label>
+                                            <div class="input-group">
+                                                <input class="form-control" data-date="" data-date-mindate="" data-format="" data-val="true" data-val-date="The field YearlyEndDate must be a date." data-val-required="The YearlyEndDate field is required." id="YearlyEndDate" name="YearlyEndDate" type="datetime" value="">
+                                                <span class="input-group-addon add-on">
+                                                    <span class="glyphicon-calendar glyphicon">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <span class="field-validation-valid help-block" data-valmsg-for="YearlyEndDate" data-valmsg-replace="true"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div id="GenerateReservationsYearlyRepeat" class="pull-right btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-heading" role="tab" id="HeadingIrregular">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#RepeatAccordion" href="#CollapseIrregular" aria-expanded="true" aria-controls="CollapseIrregular">
+                                        Irregular
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="CollapseIrregular" class="panel-collapse collapse" role="tabpanel" aria-labelledby="HeadingIrregular">
+                                <div class="panel-body">
+                                    <div class="col-xs-12">
+                                        <div class="form-group datetimepicker input-group" id="IrregularStartTimePicker">
+                                            <label class="control-label" for="startTime">Start Time</label>
+                                            <div class="input-group">
+                                                <input class="form-control" data-date="" data-date-mindate="" data-format="" data-val="true" data-val-date="The field Start Time must be a date." data-val-required="The Start Time field is required." id="IrregularStartTime" name="IrregularStartTime" type="datetime" value="">
+                                                <span class="input-group-addon add-on">
+                                                    <span class="glyphicon-calendar glyphicon">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <span class="field-validation-valid help-block" data-valmsg-for="IrregularStartTime" data-valmsg-replace="true"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="form-group datetimepicker input-group" id="IrregularEndTimePicker">
+                                            <label class="control-label" for="startTime">End Time</label>
+                                            <div class="input-group">
+                                                <input class="form-control" data-date="" data-date-mindate="" data-format="" data-val="true" data-val-date="The field End Time must be a date." data-val-required="The End Time field is required." id="IrregularEndTime" name="IrregularEndTime" type="datetime" value="">
+                                                <span class="input-group-addon add-on">
+                                                    <span class="glyphicon-calendar glyphicon">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <span class="field-validation-valid help-block" data-valmsg-for="IrregularEndTime" data-valmsg-replace="true"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 form-group">
+                                        <label class="control-label" for="IrregularLocation">Location(s)</label>
+                                        @Html.ListBox("IrregularLocation", Model.LocationList, new { @class = "form-control", size = (Model.LocationList).Count() })
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div id="GenerateReservationsIrregularRepeat" class="pull-right btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-right"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h2>3. Confirm Reservations
+                    <span class="disabled pull-right btn btn-default" id="SaveEvent">Save</span>
+                </h2>
+            </div>
+            <div class="panel-body" id="Reservations">
+            </div>
+        </div>
+    </div>
+}
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+        });
+        $(document).ready(function () {
+            SetRepeatDates($('#startTimePicker').data("DateTimePicker").date, $('#endTimePicker').data("DateTimePicker").date);
+            ShowMaps();
+        });
+
+        $("#RemoveAllReservations").on('click', function () {
+            $("#Reservations").html("");
+        });
+
+        $("#IrregularStartTimePicker").on('dp.change', function (e) {
+            SynchStartAndEndTimePickers($("#IrregularStartTimePicker"), $("#IrregularEndTimePicker"), 1, 1);
+        })
+
+        $("#IrregularEndTimePicker").on('dp.change', function (e) {
+            SynchStartAndEndTimePickers($("#IrregularStartTimePicker"), $("#IrregularEndTimePicker"), 0, 1);
+        })
+
+        $("#startTimePicker").on('dp.change', function (e) {
+            SynchStartAndEndTimePickers($("#startTimePicker"), $("#endTimePicker"), 1, 1);
+            $('#IrregularStartTimePicker').data("DateTimePicker").setDate(e.date);
+            SetRepeatDates($('#startTimePicker').data("DateTimePicker").date, $('#endTimePicker').data("DateTimePicker").date);
+        })
+
+        $("#endTimePicker").on('dp.change', function (e) {
+            SynchStartAndEndTimePickers($("#startTimePicker"), $("#endTimePicker"), 0, 1);
+            $('#IrregularEndTimePicker').data("DateTimePicker").setDate(e.date);
+        })
+
+        $("select#EventLocations").on('change', function () {
+            ShowMaps();
+        });
+
+        function SetRepeatDates(start, end) {
+            $('#IrregularEndTimePicker').data("DateTimePicker").setDate(end);
+            $('#IrregularStartTimePicker').data("DateTimePicker").setDate(start);
+            $('#DailyEndDatePicker').data("DateTimePicker").setDate(start);
+            $('#WeeklyEndDatePicker').data("DateTimePicker").setDate(start);
+            $('#MonthlyEndDatePicker').data("DateTimePicker").setDate(start);
+            $('#YearlyEndDatePicker').data("DateTimePicker").setDate(start);
+            var dayOfMonthString = start.date().toString();
+            switch (dayOfMonthString) {
+                case "1":
+                case "21":
+                case "31":
+                    dayOfMonthString = dayOfMonthString + "st";
+                    break;
+                case "2":
+                case "22":
+                    dayOfMonthString = dayOfMonthString + "nd";
+                    break;
+                case "3":
+                case "23":
+                    dayOfMonthString = dayOfMonthString + "rd";
+                    break;
+                default:
+                    dayOfMonthString = dayOfMonthString + "th";
+                    break;
+            }
+            $("#MonthlyRepeatOnDate").html(dayOfMonthString);
+            $("#MonthlyOccurrence").val(Math.ceil(start.date() / 7));
+            $("#MonthlyRepeatDOW").val(start.day());
+            $("#YearlyRepeatOnDate").html(dayOfMonthString);
+            $(".currentStartDateMonth").html(start.format("MMMM"));
+            $("#YearlyOccurrence").val(Math.ceil(start.date() / 7));
+            $("#YearlyRepeatDOW").val(start.day());
+        };
+
+        function ShowMaps() {
+            var s = $("select#EventLocations").val();
+            var scount = s.length;
+            var colwidth = scount <= 3 ? 12 : 6;
+            $("#RoomImageContainer").html("");
+            s.forEach(function (entry) {
+                var imgtext = $("select#EventLocations option[value='" + entry + "']").text();
+                $("#RoomImageContainer").append("<div class='roomimage col-sm-" + colwidth + "'><img src='/Content/images/rooms/" + imgtext + ".jpg' alt='" + imgtext + "' /></div>")
+            });
+        };
+
+        $("#GenerateReservationsNoRepeat").on('click', function () {
+            var startTime = $('#startTimePicker').data("DateTimePicker").date;
+            var endTime = $('#endTimePicker').data("DateTimePicker").date;
+            var locations = $("#EventLocations").val();
+            GenerateReservations(startTime, endTime, locations, 0, moment(), null, null, null, true);
+        });
+
+        $("#GenerateReservationsDailyRepeat").on('click', function () {
+            var startTime = $('#startTimePicker').data("DateTimePicker").date;
+            var endTime = $('#endTimePicker').data("DateTimePicker").date;
+            var locations = $("#EventLocations").val();
+            GenerateReservations(startTime, endTime, locations, 1, $("#DailyEndDatePicker").data("DateTimePicker").date, null, $("#DailyWeekdayOnly:checkbox:checked").val(), null, true);
+        });
+
+        $("#GenerateReservationsWeeklyRepeat").on('click', function () {
+            var startTime = $('#startTimePicker').data("DateTimePicker").date;
+            var endTime = $('#endTimePicker').data("DateTimePicker").date;
+            var locations = $("#EventLocations").val();
+            var dow = $("#WeeklyDOW input:checkbox:checked").map(function () {
+                return this.value;
+            }).get();
+            GenerateReservations(startTime, endTime, locations, 2, $("#WeeklyEndDatePicker").data("DateTimePicker").date, $("#WeeklyRepeatFrequency").val(), null, dow, true);
+        });
+
+        $("#GenerateReservationsMonthlyRepeat").on('click', function () {
+            var startTime = $('#startTimePicker').data("DateTimePicker").date;
+            var endTime = $('#endTimePicker').data("DateTimePicker").date;
+            var locations = $("#EventLocations").val();
+            var optionSelect = $("input:radio[name='MonthlyRepeatOption']:checked").val();
+            var option;
+            if (optionSelect == "2")
+            {
+                option = $("#MonthlyOccurrence").val();
+            }
+            else {
+                option = "99";
+            }
+            var dow = $("#WeeklyDOW input:checkbox:checked").map(function () {
+                return this.value;
+            }).get();
+            GenerateReservations(startTime, endTime, locations, 3, $("#MonthlyEndDatePicker").data("DateTimePicker").date, $("#MonthlyRepeatFrequency").val(), option, [$("#MonthlyRepeatDOW").val()], true);
+        });
+
+        $("#GenerateReservationsYearlyRepeat").on('click', function () {
+            var startTime = $('#startTimePicker').data("DateTimePicker").date;
+            var endTime = $('#endTimePicker').data("DateTimePicker").date;
+            var locations = $("#EventLocations").val();
+            var optionSelect = $("input:radio[name='YearlyRepeatOption']:checked").val();
+            var option;
+            if (optionSelect == "2") {
+                option = $("#YearlyOccurrence").val();
+            }
+            else {
+                option = "99";
+            }
+            GenerateReservations(startTime, endTime, locations, 4, $("#YearlyEndDatePicker").data("DateTimePicker").date, $("#YearlyRepeatFrequency").val(), option, [$("#YearlyRepeatDOW").val()], true);
+        });
+
+        $("#GenerateReservationsIrregularRepeat").on('click', function () {
+            var startTime = $('#IrregularStartTimePicker').data("DateTimePicker").date;
+            var endTime = $('#IrregularEndTimePicker').data("DateTimePicker").date;
+            var locations = $("#IrregularLocation").val();
+            GenerateReservations(startTime, endTime, locations, 0, moment(), null, null, null, true);
+        });
+
+        function GenerateReservations(startTime, endTime, locations, repeatType, repeatEndDate, repeatFrequency, repeatOption, repeatDOW, append) {
+            if (!append) {
+                $("#Reservations").html("");
+            }
+            var attendeeCount = $("#Event_attendeeCountDGS").val() + $("#Event_attendeeCountNonDGS").val();
+            var attendeeCountDGS = $("#Event_attendeeCountDGS").val();
+            var attendeeCountNonDGS = $("#Event_attendeeCountNonDGS").val();
+            var options = new Array();
+            $("input[name='Options']:checked").each(function () {
+                options.push($(this).val());
+            });
+
+            var reservation = {
+                "repeatType": repeatType,
+                "repeatEndDate": repeatEndDate.format(),
+                "repeatFrequency": repeatFrequency,
+                "repeatOption": repeatOption,
+                "repeatDOW": repeatDOW,
+                "startTime": startTime.format(),
+                "endTime": endTime.format(),
+                "locations": locations,
+                "options": options,
+                "attendeeCount": attendeeCount,
+                "attendeeCountDGS": attendeeCountDGS,
+                "attendeeCountNonDGS": attendeeCountNonDGS
+
+            };
+
+            $.ajax({
+                url: '/Events/_GenerateReservations',
+                data: reservation,
+                traditional: true
+            }).done(function (data) {
+                AppendData(data, $("#Reservations"));
+                $("#SaveEvent").removeClass("disabled");
+            }).error(function (jqXHR, textStatus, errorThrown) {
+                AppendData(jqXHR, $("#Reservations"));
+            }).always(function () {
+            });
+        }
+
+        $("#SaveEvent").on('click', function () {
+            var reservations = new Array();
+            
+            $("#Reservations > div.list-group > div.list-group-item").each(function(e) {
+                reservations.push({
+                    "startTime": new Date($(this).data("starttime")),
+                    "endTime": new Date($(this).data("endtime")),
+                    "locations": $(this).data("locations"),
+                    "attendeeCount": $(this).data("attendeecount"),
+                    "attendeeCountDGS": $(this).data("attendeecountdgs"),
+                    "attendeeCountNonDGS": $(this).data("attendeecountnondgs"),
+                    "options": $(this).data("options"),
+                    "modified": new Date()
+                });
+            });
+            var options = new Array();
+            $("input[name='Options']:checked").each(function () {
+                options.push($(this).val());
+            });
+
+            var form = $("#CreateEventForm").serializeObject();
+            var model = {
+                "ev": form,
+                "reservations": reservations,
+                "EventLocations": $("#EventLocations").val(),
+                "EventOption": options
+            };
+            $.ajax({
+                url: '/Events/AsyncCreate',
+                data: JSON.stringify(model),
+                traditional: true,
+                type: "POST",
+                contentType: "application/json; charset=utf-8"
+            }).done(function (data) {
+                if (data.toString().indexOf("http") > -1)
+                {
+                    window.location.href = data.toString();
+                }
+                else if (data.toString().indexOf("Success") > -1)
+                {
+                    CreateAlert(data, "success");
+                }
+                else {
+                    CreateAlert(data, "danger");
+                }
+            }).error(function (jqXHR, textStatus, errorThrown) {
+                CreateAlert(jqXHR, "warning");
+            }).always(function () {
+            });
+
+        });
+
+        $.fn.serializeObject = function () {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function () {
+                if (o[this.name] !== undefined) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
+
+
+
+    </script>
+}

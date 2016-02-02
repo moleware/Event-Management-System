@@ -1,0 +1,2143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="EventManagementSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Consumable">
+          <Key>
+            <PropertyRef Name="consumableId" />
+          </Key>
+          <Property Name="consumableId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar(max)" Nullable="false" />
+          <Property Name="vendorId" Type="int" Nullable="false" />
+          <Property Name="cost" Type="money" />
+        </EntityType>
+        <EntityType Name="Contact">
+          <Key>
+            <PropertyRef Name="contactId" />
+          </Key>
+          <Property Name="contactId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="lastName" Type="varchar" MaxLength="50" />
+          <Property Name="firstName" Type="varchar" MaxLength="50" />
+          <Property Name="email" Type="varchar(max)" />
+          <Property Name="officePhone" Type="varchar" MaxLength="20" />
+          <Property Name="mobilePhone" Type="varchar" MaxLength="20" />
+          <Property Name="address1" Type="varchar" MaxLength="255" />
+          <Property Name="address2" Type="varchar" MaxLength="255" />
+          <Property Name="city" Type="varchar" MaxLength="255" />
+          <Property Name="state" Type="varchar" MaxLength="10" />
+          <Property Name="postal" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="DietaryRestriction">
+          <Key>
+            <PropertyRef Name="dietaryRestrictionId" />
+          </Key>
+          <Property Name="dietaryRestrictionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="description" Type="text" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="eventId" />
+          </Key>
+          <Property Name="eventId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="owner" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="organizer" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="eventStatusId" Type="int" Nullable="false" />
+          <Property Name="requestDate" Type="datetime" Nullable="false" />
+          <Property Name="startTime" Type="datetime" Nullable="false" />
+          <Property Name="endTime" Type="datetime" Nullable="false" />
+          <Property Name="attendeeCount" Type="int" />
+          <Property Name="attendeeCountDGS" Type="int" />
+          <Property Name="attendeeCountNonDGS" Type="int" />
+          <Property Name="repeatEnd" Type="datetime" />
+          <Property Name="repeatDay" Type="int" />
+          <Property Name="repeatMonth" Type="int" />
+          <Property Name="repeatMonthWeek" Type="int" />
+          <Property Name="repeatMonthlyWeekday" Type="int" />
+          <Property Name="repeatYear" Type="int" />
+          <Property Name="repeatWeek" Type="int" />
+          <Property Name="repeatWeekday" Type="int" />
+          <Property Name="notes" Type="varchar(max)" />
+          <Property Name="repeatTypeId" Type="int" />
+          <Property Name="repeatIrregular" Type="ntext" />
+          <Property Name="created" Type="datetime" />
+          <Property Name="createdBy" Type="varchar" MaxLength="50" />
+          <Property Name="modified" Type="datetime" />
+          <Property Name="modifiedBy" Type="nchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="EventIrregularRepeat">
+          <Key>
+            <PropertyRef Name="eventIrregularRepeatId" />
+          </Key>
+          <Property Name="eventIrregularRepeatId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="eventId" Type="int" Nullable="false" />
+          <Property Name="startTime" Type="datetime" />
+          <Property Name="endTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="EventLocation">
+          <Key>
+            <PropertyRef Name="eventId" />
+            <PropertyRef Name="locationId" />
+          </Key>
+          <Property Name="eventId" Type="int" Nullable="false" />
+          <Property Name="locationId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EventOption">
+          <Key>
+            <PropertyRef Name="eventId" />
+            <PropertyRef Name="optionId" />
+          </Key>
+          <Property Name="eventId" Type="int" Nullable="false" />
+          <Property Name="optionId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EventStatusChoice">
+          <Key>
+            <PropertyRef Name="eventStatusId" />
+          </Key>
+          <Property Name="eventStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="locationId" />
+          </Key>
+          <Property Name="locationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="maxOccupancy" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LocationConfiguration">
+          <Key>
+            <PropertyRef Name="locationConfigurationId" />
+          </Key>
+          <Property Name="locationConfigurationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="locationId" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="logId" />
+          </Key>
+          <Property Name="logId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="userId" Type="nvarchar" MaxLength="50" />
+          <Property Name="action" Type="nvarchar(max)" />
+          <Property Name="data" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Notifications_OptionUsers">
+          <Key>
+            <PropertyRef Name="optionId" />
+            <PropertyRef Name="userId" />
+          </Key>
+          <Property Name="optionId" Type="int" Nullable="false" />
+          <Property Name="userId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Option">
+          <Key>
+            <PropertyRef Name="optionId" />
+          </Key>
+          <Property Name="optionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RepeatType">
+          <Key>
+            <PropertyRef Name="repeatTypeId" />
+          </Key>
+          <Property Name="repeatTypeId" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="resdataACN">
+          <Key>
+            <PropertyRef Name="Rec No" />
+          </Key>
+          <Property Name="Rec No" Type="int" Nullable="false" />
+          <Property Name="Actnumber" Type="int" Nullable="false" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="resdataACT">
+          <Key>
+            <PropertyRef Name="Rec No" />
+          </Key>
+          <Property Name="Rec No" Type="int" Nullable="false" />
+          <Property Name="Actnumber" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Client" Type="nvarchar" MaxLength="255" />
+          <Property Name="Prime" Type="nvarchar" MaxLength="255" />
+          <Property Name="Units" Type="int" />
+          <Property Name="Username" Type="nvarchar" MaxLength="255" />
+          <Property Name="Changedate" Type="datetime" />
+          <Property Name="Changetime" Type="datetime" />
+          <Property Name="Lock" Type="int" />
+          <Property Name="Repeattype" Type="int" />
+          <Property Name="Tentative" Type="int" />
+          <Property Name="Private" Type="int" />
+          <Property Name="Project" Type="nvarchar" MaxLength="255" />
+          <Property Name="Inactive" Type="int" />
+          <Property Name="Misc" Type="nvarchar" MaxLength="255" />
+          <Property Name="Forecolour" Type="int" />
+          <Property Name="Backcolour" Type="int" />
+        </EntityType>
+        <EntityType Name="resdataDAT">
+          <Key>
+            <PropertyRef Name="Rec No" />
+          </Key>
+          <Property Name="Rec No" Type="int" Nullable="false" />
+          <Property Name="Actnumber" Type="int" />
+          <Property Name="Date" Type="nvarchar" MaxLength="255" />
+          <Property Name="Time" Type="datetime" />
+          <Property Name="Actualstart" Type="datetime" />
+          <Property Name="Actualend" Type="datetime" />
+          <Property Name="Endtime" Type="datetime" />
+          <Property Name="Enddate" Type="nvarchar" MaxLength="255" />
+          <Property Name="Actualdate" Type="nvarchar" MaxLength="255" />
+          <Property Name="Actualenddate" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="resdataRAC">
+          <Key>
+            <PropertyRef Name="Rec No" />
+          </Key>
+          <Property Name="Rec No" Type="int" Nullable="false" />
+          <Property Name="Actnumber" Type="int" />
+          <Property Name="Resource" Type="nvarchar" MaxLength="255" />
+          <Property Name="Units" Type="int" />
+        </EntityType>
+        <EntityType Name="resdataREP">
+          <Key>
+            <PropertyRef Name="Rec No" />
+          </Key>
+          <Property Name="Rec No" Type="int" Nullable="false" />
+          <Property Name="Actnumber" Type="int" />
+          <Property Name="Repnumber" Type="int" />
+          <Property Name="Weekendrepeat" Type="int" />
+          <Property Name="Week" Type="int" />
+          <Property Name="Weekday" Type="int" />
+          <Property Name="Monday" Type="int" />
+          <Property Name="Tuesday" Type="int" />
+          <Property Name="Wednesday" Type="int" />
+          <Property Name="Thursday" Type="int" />
+          <Property Name="Friday" Type="int" />
+          <Property Name="Saturday" Type="int" />
+          <Property Name="Sunday" Type="int" />
+          <Property Name="Repend" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Reservation">
+          <Key>
+            <PropertyRef Name="reservationId" />
+          </Key>
+          <Property Name="reservationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="eventId" Type="int" Nullable="false" />
+          <Property Name="startTime" Type="datetime" Nullable="false" />
+          <Property Name="endTime" Type="datetime" Nullable="false" />
+          <Property Name="created" Type="datetime" />
+          <Property Name="modified" Type="datetime" />
+          <Property Name="createdBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="modifiedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="attendeeCount" Type="int" />
+          <Property Name="attendeeCountDGS" Type="int" />
+          <Property Name="attendeeCountNonDGS" Type="int" />
+        </EntityType>
+        <EntityType Name="ReservationConsumable">
+          <Key>
+            <PropertyRef Name="reservationId" />
+            <PropertyRef Name="consumableId" />
+          </Key>
+          <Property Name="reservationId" Type="int" Nullable="false" />
+          <Property Name="consumableId" Type="int" Nullable="false" />
+          <Property Name="quantity" Type="int" Nullable="false" />
+          <Property Name="reservationParticipantId" Type="int" />
+        </EntityType>
+        <EntityType Name="ReservationLocation">
+          <Key>
+            <PropertyRef Name="reservationId" />
+            <PropertyRef Name="locationId" />
+          </Key>
+          <Property Name="reservationId" Type="int" Nullable="false" />
+          <Property Name="locationId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReservationNote">
+          <Key>
+            <PropertyRef Name="reservationNoteId" />
+          </Key>
+          <Property Name="reservationNoteId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="reservationId" Type="int" Nullable="false" />
+          <Property Name="created" Type="date" Nullable="false" />
+          <Property Name="note" Type="varchar(max)" />
+          <Property Name="createdBy" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReservationOption">
+          <Key>
+            <PropertyRef Name="reservationId" />
+            <PropertyRef Name="optionId" />
+          </Key>
+          <Property Name="reservationId" Type="int" Nullable="false" />
+          <Property Name="optionId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReservationParticipant">
+          <Key>
+            <PropertyRef Name="reservationId" />
+            <PropertyRef Name="userId" />
+          </Key>
+          <Property Name="reservationId" Type="int" Nullable="false" />
+          <Property Name="userId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ReservationResource">
+          <Key>
+            <PropertyRef Name="reservationId" />
+            <PropertyRef Name="resourceId" />
+          </Key>
+          <Property Name="reservationId" Type="int" Nullable="false" />
+          <Property Name="resourceId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Resource">
+          <Key>
+            <PropertyRef Name="resourceId" />
+          </Key>
+          <Property Name="resourceId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="resourceTypeId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ResourceType">
+          <Key>
+            <PropertyRef Name="resourceTypeId" />
+          </Key>
+          <Property Name="resourceTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="userId" />
+          </Key>
+          <Property Name="userId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="loginName" Type="varchar" MaxLength="10" />
+          <Property Name="lastName" Type="varchar" MaxLength="50" />
+          <Property Name="firstName" Type="varchar" MaxLength="50" />
+          <Property Name="shortName" Type="varchar" MaxLength="255" />
+          <Property Name="company" Type="varchar" MaxLength="255" />
+          <Property Name="email" Type="varchar" MaxLength="255" />
+          <Property Name="phone" Type="varchar" MaxLength="20" />
+          <Property Name="isActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="UserFoodProfile">
+          <Key>
+            <PropertyRef Name="userFoodProfileId" />
+          </Key>
+          <Property Name="userFoodProfileId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="userId" Type="int" Nullable="false" />
+          <Property Name="likes" Type="text" />
+          <Property Name="dislikes" Type="text" />
+        </EntityType>
+        <EntityType Name="UserFoodProfileDietaryRestriction">
+          <Key>
+            <PropertyRef Name="userFoodProfileDietaryRestrictionId" />
+          </Key>
+          <Property Name="userFoodProfileDietaryRestrictionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="userFoodProfileId" Type="int" />
+          <Property Name="dietaryRestrictionId" Type="int" />
+        </EntityType>
+        <EntityType Name="Vendor">
+          <Key>
+            <PropertyRef Name="vendorId" />
+          </Key>
+          <Property Name="vendorId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VendorCategory">
+          <Key>
+            <PropertyRef Name="vendorCategoryId" />
+          </Key>
+          <Property Name="vendorCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VendorContact">
+          <Key>
+            <PropertyRef Name="vendorContactId" />
+          </Key>
+          <Property Name="vendorContactId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="vendorId" Type="int" Nullable="false" />
+          <Property Name="contactId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VendorVendorCategory">
+          <Key>
+            <PropertyRef Name="vendorVendorCategoryId" />
+          </Key>
+          <Property Name="vendorVendorCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="vendorId" Type="int" Nullable="false" />
+          <Property Name="vendorCategoryId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'EventManagementSystem_v2.dbo.vw_ReservationLocation' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vw_ReservationLocation">
+          <Key>
+            <PropertyRef Name="locationId" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="maxOccupancy" />
+            <PropertyRef Name="reservationLocationId" />
+            <PropertyRef Name="reservationId" />
+            <PropertyRef Name="Expr1" />
+            <PropertyRef Name="Expr2" />
+            <PropertyRef Name="eventId" />
+            <PropertyRef Name="startTime" />
+            <PropertyRef Name="endTime" />
+          </Key>
+          <Property Name="locationId" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="maxOccupancy" Type="int" Nullable="false" />
+          <Property Name="reservationLocationId" Type="int" Nullable="false" />
+          <Property Name="reservationId" Type="int" Nullable="false" />
+          <Property Name="Expr1" Type="int" Nullable="false" />
+          <Property Name="Expr2" Type="int" Nullable="false" />
+          <Property Name="eventId" Type="int" Nullable="false" />
+          <Property Name="startTime" Type="datetime" Nullable="false" />
+          <Property Name="endTime" Type="datetime" Nullable="false" />
+          <Property Name="created" Type="datetime" />
+          <Property Name="modified" Type="datetime" />
+          <Property Name="createdBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="modifiedBy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="Consumable_ReservationConsumable_FK1">
+          <End Role="Consumable" Type="Self.Consumable" Multiplicity="1" />
+          <End Role="ReservationConsumable" Type="Self.ReservationConsumable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consumable">
+              <PropertyRef Name="consumableId" />
+            </Principal>
+            <Dependent Role="ReservationConsumable">
+              <PropertyRef Name="consumableId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Contact_VendorContact_FK1">
+          <End Role="Contact" Type="Self.Contact" Multiplicity="1" />
+          <End Role="VendorContact" Type="Self.VendorContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contact">
+              <PropertyRef Name="contactId" />
+            </Principal>
+            <Dependent Role="VendorContact">
+              <PropertyRef Name="contactId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="DietaryRestriction_UserFoodProfileDietaryRestriction_FK1">
+          <End Role="DietaryRestriction" Type="Self.DietaryRestriction" Multiplicity="0..1" />
+          <End Role="UserFoodProfileDietaryRestriction" Type="Self.UserFoodProfileDietaryRestriction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DietaryRestriction">
+              <PropertyRef Name="dietaryRestrictionId" />
+            </Principal>
+            <Dependent Role="UserFoodProfileDietaryRestriction">
+              <PropertyRef Name="dietaryRestrictionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Event_EventLocation_FK1">
+          <End Role="Event" Type="Self.Event" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EventLocation" Type="Self.EventLocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="eventId" />
+            </Principal>
+            <Dependent Role="EventLocation">
+              <PropertyRef Name="eventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Event_Reservation_FK1">
+          <End Role="Event" Type="Self.Event" Multiplicity="1" />
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="eventId" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="eventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EventStatus_Event_FK1">
+          <End Role="EventStatusChoice" Type="Self.EventStatusChoice" Multiplicity="1" />
+          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EventStatusChoice">
+              <PropertyRef Name="eventStatusId" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="eventStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventIrregularRepeat_Event">
+          <End Role="Event" Type="Self.Event" Multiplicity="1" />
+          <End Role="EventIrregularRepeat" Type="Self.EventIrregularRepeat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="eventId" />
+            </Principal>
+            <Dependent Role="EventIrregularRepeat">
+              <PropertyRef Name="eventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventOption_Event">
+          <End Role="Event" Type="Self.Event" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EventOption" Type="Self.EventOption" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="eventId" />
+            </Principal>
+            <Dependent Role="EventOption">
+              <PropertyRef Name="eventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventOption_Option">
+          <End Role="Option" Type="Self.Option" Multiplicity="1" />
+          <End Role="EventOption" Type="Self.EventOption" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Option">
+              <PropertyRef Name="optionId" />
+            </Principal>
+            <Dependent Role="EventOption">
+              <PropertyRef Name="optionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_OptionUsers_Option">
+          <End Role="Option" Type="Self.Option" Multiplicity="1" />
+          <End Role="Notifications_OptionUsers" Type="Self.Notifications_OptionUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Option">
+              <PropertyRef Name="optionId" />
+            </Principal>
+            <Dependent Role="Notifications_OptionUsers">
+              <PropertyRef Name="optionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_OptionUsers_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Notifications_OptionUsers" Type="Self.Notifications_OptionUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="Notifications_OptionUsers">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ReservationNote_Reservation">
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ReservationNote" Type="Self.ReservationNote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="reservationId" />
+            </Principal>
+            <Dependent Role="ReservationNote">
+              <PropertyRef Name="reservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Location_EventLocation_FK1">
+          <End Role="Location" Type="Self.Location" Multiplicity="1" />
+          <End Role="EventLocation" Type="Self.EventLocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="locationId" />
+            </Principal>
+            <Dependent Role="EventLocation">
+              <PropertyRef Name="locationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Location_LocationConfiguration_FK1">
+          <End Role="Location" Type="Self.Location" Multiplicity="1" />
+          <End Role="LocationConfiguration" Type="Self.LocationConfiguration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="locationId" />
+            </Principal>
+            <Dependent Role="LocationConfiguration">
+              <PropertyRef Name="locationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Location_ReservationLocation_FK1">
+          <End Role="Location" Type="Self.Location" Multiplicity="1" />
+          <End Role="ReservationLocation" Type="Self.ReservationLocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="locationId" />
+            </Principal>
+            <Dependent Role="ReservationLocation">
+              <PropertyRef Name="locationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Option_ReservationOption_FK1">
+          <End Role="Option" Type="Self.Option" Multiplicity="1" />
+          <End Role="ReservationOption" Type="Self.ReservationOption" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Option">
+              <PropertyRef Name="optionId" />
+            </Principal>
+            <Dependent Role="ReservationOption">
+              <PropertyRef Name="optionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RepeatType_Event_FK1">
+          <End Role="RepeatType" Type="Self.RepeatType" Multiplicity="0..1" />
+          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RepeatType">
+              <PropertyRef Name="repeatTypeId" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="repeatTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Reservation_ReservationConsumable_FK1">
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ReservationConsumable" Type="Self.ReservationConsumable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="reservationId" />
+            </Principal>
+            <Dependent Role="ReservationConsumable">
+              <PropertyRef Name="reservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Reservation_ReservationLocation_FK1">
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ReservationLocation" Type="Self.ReservationLocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="reservationId" />
+            </Principal>
+            <Dependent Role="ReservationLocation">
+              <PropertyRef Name="reservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Reservation_ReservationOption_FK1">
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ReservationOption" Type="Self.ReservationOption" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="reservationId" />
+            </Principal>
+            <Dependent Role="ReservationOption">
+              <PropertyRef Name="reservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Reservation_ReservationParticipant_FK1">
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="1" />
+          <End Role="ReservationParticipant" Type="Self.ReservationParticipant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="reservationId" />
+            </Principal>
+            <Dependent Role="ReservationParticipant">
+              <PropertyRef Name="reservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Reservation_ReservationResource_FK1">
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ReservationResource" Type="Self.ReservationResource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="reservationId" />
+            </Principal>
+            <Dependent Role="ReservationResource">
+              <PropertyRef Name="reservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Resource_ReservationResource_FK1">
+          <End Role="Resource" Type="Self.Resource" Multiplicity="1" />
+          <End Role="ReservationResource" Type="Self.ReservationResource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Resource">
+              <PropertyRef Name="resourceId" />
+            </Principal>
+            <Dependent Role="ReservationResource">
+              <PropertyRef Name="resourceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ResourceType_Resource_FK1">
+          <End Role="ResourceType" Type="Self.ResourceType" Multiplicity="1" />
+          <End Role="Resource" Type="Self.Resource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ResourceType">
+              <PropertyRef Name="resourceTypeId" />
+            </Principal>
+            <Dependent Role="Resource">
+              <PropertyRef Name="resourceTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="User_ReservationParticipant_FK1">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="ReservationParticipant" Type="Self.ReservationParticipant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="ReservationParticipant">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="User_UserFoodProfile_FK1">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserFoodProfile" Type="Self.UserFoodProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="UserFoodProfile">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserFoodProfile_UserFoodProfileDietaryRestriction_FK1">
+          <End Role="UserFoodProfile" Type="Self.UserFoodProfile" Multiplicity="0..1" />
+          <End Role="UserFoodProfileDietaryRestriction" Type="Self.UserFoodProfileDietaryRestriction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserFoodProfile">
+              <PropertyRef Name="userFoodProfileId" />
+            </Principal>
+            <Dependent Role="UserFoodProfileDietaryRestriction">
+              <PropertyRef Name="userFoodProfileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Vendor_Consumable_FK1">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="1" />
+          <End Role="Consumable" Type="Self.Consumable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="vendorId" />
+            </Principal>
+            <Dependent Role="Consumable">
+              <PropertyRef Name="vendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Vendor_VendorContact_FK1">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="1" />
+          <End Role="VendorContact" Type="Self.VendorContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="vendorId" />
+            </Principal>
+            <Dependent Role="VendorContact">
+              <PropertyRef Name="vendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Vendor_VendorVendorCategory_FK1">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="1" />
+          <End Role="VendorVendorCategory" Type="Self.VendorVendorCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="vendorId" />
+            </Principal>
+            <Dependent Role="VendorVendorCategory">
+              <PropertyRef Name="vendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="VendorCategory_VendorVendorCategory_FK1">
+          <End Role="VendorCategory" Type="Self.VendorCategory" Multiplicity="1" />
+          <End Role="VendorVendorCategory" Type="Self.VendorVendorCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VendorCategory">
+              <PropertyRef Name="vendorCategoryId" />
+            </Principal>
+            <Dependent Role="VendorVendorCategory">
+              <PropertyRef Name="vendorCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EventManagementSystemModelStoreContainer">
+          <EntitySet Name="Consumable" EntityType="Self.Consumable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contact" EntityType="Self.Contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DietaryRestriction" EntityType="Self.DietaryRestriction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventIrregularRepeat" EntityType="Self.EventIrregularRepeat" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventLocation" EntityType="Self.EventLocation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventOption" EntityType="Self.EventOption" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventStatusChoice" EntityType="Self.EventStatusChoice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LocationConfiguration" EntityType="Self.LocationConfiguration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications_OptionUsers" EntityType="Self.Notifications_OptionUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Option" EntityType="Self.Option" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RepeatType" EntityType="Self.RepeatType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="resdataACN" EntityType="Self.resdataACN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="resdataACT" EntityType="Self.resdataACT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="resdataDAT" EntityType="Self.resdataDAT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="resdataRAC" EntityType="Self.resdataRAC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="resdataREP" EntityType="Self.resdataREP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reservation" EntityType="Self.Reservation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReservationConsumable" EntityType="Self.ReservationConsumable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReservationLocation" EntityType="Self.ReservationLocation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReservationNote" EntityType="Self.ReservationNote" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReservationOption" EntityType="Self.ReservationOption" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReservationParticipant" EntityType="Self.ReservationParticipant" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReservationResource" EntityType="Self.ReservationResource" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Resource" EntityType="Self.Resource" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ResourceType" EntityType="Self.ResourceType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserFoodProfile" EntityType="Self.UserFoodProfile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserFoodProfileDietaryRestriction" EntityType="Self.UserFoodProfileDietaryRestriction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vendor" EntityType="Self.Vendor" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VendorCategory" EntityType="Self.VendorCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VendorContact" EntityType="Self.VendorContact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VendorVendorCategory" EntityType="Self.VendorVendorCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vw_ReservationLocation" EntityType="Self.vw_ReservationLocation" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vw_ReservationLocation].[locationId] AS [locationId], 
+    [vw_ReservationLocation].[name] AS [name], 
+    [vw_ReservationLocation].[maxOccupancy] AS [maxOccupancy], 
+    [vw_ReservationLocation].[reservationLocationId] AS [reservationLocationId], 
+    [vw_ReservationLocation].[reservationId] AS [reservationId], 
+    [vw_ReservationLocation].[Expr1] AS [Expr1], 
+    [vw_ReservationLocation].[Expr2] AS [Expr2], 
+    [vw_ReservationLocation].[eventId] AS [eventId], 
+    [vw_ReservationLocation].[startTime] AS [startTime], 
+    [vw_ReservationLocation].[endTime] AS [endTime], 
+    [vw_ReservationLocation].[created] AS [created], 
+    [vw_ReservationLocation].[modified] AS [modified], 
+    [vw_ReservationLocation].[createdBy] AS [createdBy], 
+    [vw_ReservationLocation].[modifiedBy] AS [modifiedBy]
+    FROM [dbo].[vw_ReservationLocation] AS [vw_ReservationLocation]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="Consumable_ReservationConsumable_FK1" Association="Self.Consumable_ReservationConsumable_FK1">
+            <End Role="Consumable" EntitySet="Consumable" />
+            <End Role="ReservationConsumable" EntitySet="ReservationConsumable" />
+          </AssociationSet>
+          <AssociationSet Name="Contact_VendorContact_FK1" Association="Self.Contact_VendorContact_FK1">
+            <End Role="Contact" EntitySet="Contact" />
+            <End Role="VendorContact" EntitySet="VendorContact" />
+          </AssociationSet>
+          <AssociationSet Name="DietaryRestriction_UserFoodProfileDietaryRestriction_FK1" Association="Self.DietaryRestriction_UserFoodProfileDietaryRestriction_FK1">
+            <End Role="DietaryRestriction" EntitySet="DietaryRestriction" />
+            <End Role="UserFoodProfileDietaryRestriction" EntitySet="UserFoodProfileDietaryRestriction" />
+          </AssociationSet>
+          <AssociationSet Name="Event_EventLocation_FK1" Association="Self.Event_EventLocation_FK1">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="EventLocation" EntitySet="EventLocation" />
+          </AssociationSet>
+          <AssociationSet Name="Event_Reservation_FK1" Association="Self.Event_Reservation_FK1">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="Reservation" EntitySet="Reservation" />
+          </AssociationSet>
+          <AssociationSet Name="EventStatus_Event_FK1" Association="Self.EventStatus_Event_FK1">
+            <End Role="EventStatusChoice" EntitySet="EventStatusChoice" />
+            <End Role="Event" EntitySet="Event" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventIrregularRepeat_Event" Association="Self.FK_EventIrregularRepeat_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="EventIrregularRepeat" EntitySet="EventIrregularRepeat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventOption_Event" Association="Self.FK_EventOption_Event">
+            <End Role="Event" EntitySet="Event" />
+            <End Role="EventOption" EntitySet="EventOption" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventOption_Option" Association="Self.FK_EventOption_Option">
+            <End Role="Option" EntitySet="Option" />
+            <End Role="EventOption" EntitySet="EventOption" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_OptionUsers_Option" Association="Self.FK_Notifications_OptionUsers_Option">
+            <End Role="Option" EntitySet="Option" />
+            <End Role="Notifications_OptionUsers" EntitySet="Notifications_OptionUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_OptionUsers_User" Association="Self.FK_Notifications_OptionUsers_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Notifications_OptionUsers" EntitySet="Notifications_OptionUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ReservationNote_Reservation" Association="Self.FK_ReservationNote_Reservation">
+            <End Role="Reservation" EntitySet="Reservation" />
+            <End Role="ReservationNote" EntitySet="ReservationNote" />
+          </AssociationSet>
+          <AssociationSet Name="Location_EventLocation_FK1" Association="Self.Location_EventLocation_FK1">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="EventLocation" EntitySet="EventLocation" />
+          </AssociationSet>
+          <AssociationSet Name="Location_LocationConfiguration_FK1" Association="Self.Location_LocationConfiguration_FK1">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="LocationConfiguration" EntitySet="LocationConfiguration" />
+          </AssociationSet>
+          <AssociationSet Name="Location_ReservationLocation_FK1" Association="Self.Location_ReservationLocation_FK1">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="ReservationLocation" EntitySet="ReservationLocation" />
+          </AssociationSet>
+          <AssociationSet Name="Option_ReservationOption_FK1" Association="Self.Option_ReservationOption_FK1">
+            <End Role="Option" EntitySet="Option" />
+            <End Role="ReservationOption" EntitySet="ReservationOption" />
+          </AssociationSet>
+          <AssociationSet Name="RepeatType_Event_FK1" Association="Self.RepeatType_Event_FK1">
+            <End Role="RepeatType" EntitySet="RepeatType" />
+            <End Role="Event" EntitySet="Event" />
+          </AssociationSet>
+          <AssociationSet Name="Reservation_ReservationConsumable_FK1" Association="Self.Reservation_ReservationConsumable_FK1">
+            <End Role="Reservation" EntitySet="Reservation" />
+            <End Role="ReservationConsumable" EntitySet="ReservationConsumable" />
+          </AssociationSet>
+          <AssociationSet Name="Reservation_ReservationLocation_FK1" Association="Self.Reservation_ReservationLocation_FK1">
+            <End Role="Reservation" EntitySet="Reservation" />
+            <End Role="ReservationLocation" EntitySet="ReservationLocation" />
+          </AssociationSet>
+          <AssociationSet Name="Reservation_ReservationOption_FK1" Association="Self.Reservation_ReservationOption_FK1">
+            <End Role="Reservation" EntitySet="Reservation" />
+            <End Role="ReservationOption" EntitySet="ReservationOption" />
+          </AssociationSet>
+          <AssociationSet Name="Reservation_ReservationParticipant_FK1" Association="Self.Reservation_ReservationParticipant_FK1">
+            <End Role="Reservation" EntitySet="Reservation" />
+            <End Role="ReservationParticipant" EntitySet="ReservationParticipant" />
+          </AssociationSet>
+          <AssociationSet Name="Reservation_ReservationResource_FK1" Association="Self.Reservation_ReservationResource_FK1">
+            <End Role="Reservation" EntitySet="Reservation" />
+            <End Role="ReservationResource" EntitySet="ReservationResource" />
+          </AssociationSet>
+          <AssociationSet Name="Resource_ReservationResource_FK1" Association="Self.Resource_ReservationResource_FK1">
+            <End Role="Resource" EntitySet="Resource" />
+            <End Role="ReservationResource" EntitySet="ReservationResource" />
+          </AssociationSet>
+          <AssociationSet Name="ResourceType_Resource_FK1" Association="Self.ResourceType_Resource_FK1">
+            <End Role="ResourceType" EntitySet="ResourceType" />
+            <End Role="Resource" EntitySet="Resource" />
+          </AssociationSet>
+          <AssociationSet Name="User_ReservationParticipant_FK1" Association="Self.User_ReservationParticipant_FK1">
+            <End Role="User" EntitySet="User" />
+            <End Role="ReservationParticipant" EntitySet="ReservationParticipant" />
+          </AssociationSet>
+          <AssociationSet Name="User_UserFoodProfile_FK1" Association="Self.User_UserFoodProfile_FK1">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserFoodProfile" EntitySet="UserFoodProfile" />
+          </AssociationSet>
+          <AssociationSet Name="UserFoodProfile_UserFoodProfileDietaryRestriction_FK1" Association="Self.UserFoodProfile_UserFoodProfileDietaryRestriction_FK1">
+            <End Role="UserFoodProfile" EntitySet="UserFoodProfile" />
+            <End Role="UserFoodProfileDietaryRestriction" EntitySet="UserFoodProfileDietaryRestriction" />
+          </AssociationSet>
+          <AssociationSet Name="Vendor_Consumable_FK1" Association="Self.Vendor_Consumable_FK1">
+            <End Role="Vendor" EntitySet="Vendor" />
+            <End Role="Consumable" EntitySet="Consumable" />
+          </AssociationSet>
+          <AssociationSet Name="Vendor_VendorContact_FK1" Association="Self.Vendor_VendorContact_FK1">
+            <End Role="Vendor" EntitySet="Vendor" />
+            <End Role="VendorContact" EntitySet="VendorContact" />
+          </AssociationSet>
+          <AssociationSet Name="Vendor_VendorVendorCategory_FK1" Association="Self.Vendor_VendorVendorCategory_FK1">
+            <End Role="Vendor" EntitySet="Vendor" />
+            <End Role="VendorVendorCategory" EntitySet="VendorVendorCategory" />
+          </AssociationSet>
+          <AssociationSet Name="VendorCategory_VendorVendorCategory_FK1" Association="Self.VendorCategory_VendorVendorCategory_FK1">
+            <End Role="VendorCategory" EntitySet="VendorCategory" />
+            <End Role="VendorVendorCategory" EntitySet="VendorVendorCategory" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="EventManagementSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Consumable">
+          <Key>
+            <PropertyRef Name="consumableId" />
+          </Key>
+          <Property Name="consumableId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="vendorId" Type="Int32" Nullable="false" />
+          <Property Name="cost" Type="Decimal" Precision="19" Scale="4" />
+          <NavigationProperty Name="Vendor" Relationship="Self.Vendor_Consumable_FK1" FromRole="Consumable" ToRole="Vendor" />
+          <NavigationProperty Name="ReservationConsumables" Relationship="EventManagementSystemModel.Consumable_ReservationConsumable_FK1" FromRole="Consumable" ToRole="ReservationConsumable" />
+        </EntityType>
+        <EntityType Name="Contact">
+          <Key>
+            <PropertyRef Name="contactId" />
+          </Key>
+          <Property Name="contactId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="officePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="mobilePhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="address1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="address2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="city" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="state" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="postal" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="VendorContacts" Relationship="Self.Contact_VendorContact_FK1" FromRole="Contact" ToRole="VendorContact" />
+        </EntityType>
+        <EntityType Name="DietaryRestriction">
+          <Key>
+            <PropertyRef Name="dietaryRestrictionId" />
+          </Key>
+          <Property Name="dietaryRestrictionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="UserFoodProfileDietaryRestrictions" Relationship="Self.DietaryRestriction_UserFoodProfileDietaryRestriction_FK1" FromRole="DietaryRestriction" ToRole="UserFoodProfileDietaryRestriction" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="eventId" />
+          </Key>
+          <Property Name="eventId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="owner" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="organizer" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="eventStatusId" Type="Int32" Nullable="false" />
+          <Property Name="requestDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="startTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="endTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="attendeeCountDGS" Type="Int32" />
+          <Property Name="attendeeCountNonDGS" Type="Int32" />
+          <Property Name="repeatEnd" Type="DateTime" Precision="3" />
+          <Property Name="repeatDay" Type="Int32" />
+          <Property Name="repeatMonth" Type="Int32" />
+          <Property Name="repeatMonthWeek" Type="Int32" />
+          <Property Name="repeatMonthlyWeekday" Type="Int32" />
+          <Property Name="repeatYear" Type="Int32" />
+          <Property Name="repeatWeek" Type="Int32" />
+          <Property Name="repeatWeekday" Type="Int32" />
+          <Property Name="notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="repeatTypeId" Type="Int32" />
+          <Property Name="repeatIrregular" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Reservations" Relationship="Self.Event_Reservation_FK1" FromRole="Event" ToRole="Reservation" />
+          <NavigationProperty Name="EventStatusChoice" Relationship="Self.EventStatus_Event_FK1" FromRole="Event" ToRole="EventStatusChoice" />
+          <NavigationProperty Name="EventIrregularRepeats" Relationship="Self.FK_EventIrregularRepeat_Event" FromRole="Event" ToRole="EventIrregularRepeat" />
+          <NavigationProperty Name="RepeatType" Relationship="Self.RepeatType_Event_FK1" FromRole="Event" ToRole="RepeatType" />
+          <NavigationProperty Name="Locations" Relationship="EventManagementSystemModel.EventLocation" FromRole="Event" ToRole="Location" />
+          <NavigationProperty Name="Options" Relationship="EventManagementSystemModel.EventOption" FromRole="Event" ToRole="Option" />
+          <Property Name="created" Type="DateTime" Precision="3" />
+          <Property Name="createdBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="modified" Type="DateTime" Precision="3" />
+          <Property Name="modifiedBy" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EventIrregularRepeat">
+          <Key>
+            <PropertyRef Name="eventIrregularRepeatId" />
+          </Key>
+          <Property Name="eventIrregularRepeatId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="eventId" Type="Int32" Nullable="false" />
+          <Property Name="startTime" Type="DateTime" Precision="3" />
+          <Property Name="endTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Event" Relationship="Self.FK_EventIrregularRepeat_Event" FromRole="EventIrregularRepeat" ToRole="Event" />
+        </EntityType>
+        <EntityType Name="EventStatusChoice">
+          <Key>
+            <PropertyRef Name="eventStatusId" />
+          </Key>
+          <Property Name="eventStatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Events" Relationship="Self.EventStatus_Event_FK1" FromRole="EventStatusChoice" ToRole="Event" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="locationId" />
+          </Key>
+          <Property Name="locationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="maxOccupancy" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="LocationConfigurations" Relationship="Self.Location_LocationConfiguration_FK1" FromRole="Location" ToRole="LocationConfiguration" />
+          <NavigationProperty Name="Reservations" Relationship="EventManagementSystemModel.ReservationLocation" FromRole="Location" ToRole="Reservation" />
+          <NavigationProperty Name="Events" Relationship="EventManagementSystemModel.EventLocation" FromRole="Location" ToRole="Event" />
+        </EntityType>
+        <EntityType Name="LocationConfiguration">
+          <Key>
+            <PropertyRef Name="locationConfigurationId" />
+          </Key>
+          <Property Name="locationConfigurationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="locationId" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Location" Relationship="Self.Location_LocationConfiguration_FK1" FromRole="LocationConfiguration" ToRole="Location" />
+        </EntityType>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="logId" />
+          </Key>
+          <Property Name="logId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="action" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="RepeatType">
+          <Key>
+            <PropertyRef Name="repeatTypeId" />
+          </Key>
+          <Property Name="repeatTypeId" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Events" Relationship="Self.RepeatType_Event_FK1" FromRole="RepeatType" ToRole="Event" />
+        </EntityType>
+        <EntityType Name="resdataACN">
+          <Key>
+            <PropertyRef Name="Rec_No" />
+          </Key>
+          <Property Name="Rec_No" Type="Int32" Nullable="false" />
+          <Property Name="Actnumber" Type="Int32" Nullable="false" />
+          <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="resdataACT">
+          <Key>
+            <PropertyRef Name="Rec_No" />
+          </Key>
+          <Property Name="Rec_No" Type="Int32" Nullable="false" />
+          <Property Name="Actnumber" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Client" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Prime" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Units" Type="Int32" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Changedate" Type="DateTime" Precision="3" />
+          <Property Name="Changetime" Type="DateTime" Precision="3" />
+          <Property Name="Lock" Type="Int32" />
+          <Property Name="Repeattype" Type="Int32" />
+          <Property Name="Tentative" Type="Int32" />
+          <Property Name="Private" Type="Int32" />
+          <Property Name="Project" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Inactive" Type="Int32" />
+          <Property Name="Misc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Forecolour" Type="Int32" />
+          <Property Name="Backcolour" Type="Int32" />
+        </EntityType>
+        <EntityType Name="resdataDAT">
+          <Key>
+            <PropertyRef Name="Rec_No" />
+          </Key>
+          <Property Name="Rec_No" Type="Int32" Nullable="false" />
+          <Property Name="Actnumber" Type="Int32" />
+          <Property Name="Date" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Time" Type="DateTime" Precision="3" />
+          <Property Name="Actualstart" Type="DateTime" Precision="3" />
+          <Property Name="Actualend" Type="DateTime" Precision="3" />
+          <Property Name="Endtime" Type="DateTime" Precision="3" />
+          <Property Name="Enddate" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Actualdate" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Actualenddate" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="resdataRAC">
+          <Key>
+            <PropertyRef Name="Rec_No" />
+          </Key>
+          <Property Name="Rec_No" Type="Int32" Nullable="false" />
+          <Property Name="Actnumber" Type="Int32" />
+          <Property Name="Resource" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Units" Type="Int32" />
+        </EntityType>
+        <EntityType Name="resdataREP">
+          <Key>
+            <PropertyRef Name="Rec_No" />
+          </Key>
+          <Property Name="Rec_No" Type="Int32" Nullable="false" />
+          <Property Name="Actnumber" Type="Int32" />
+          <Property Name="Repnumber" Type="Int32" />
+          <Property Name="Weekendrepeat" Type="Int32" />
+          <Property Name="Week" Type="Int32" />
+          <Property Name="Weekday" Type="Int32" />
+          <Property Name="Monday" Type="Int32" />
+          <Property Name="Tuesday" Type="Int32" />
+          <Property Name="Wednesday" Type="Int32" />
+          <Property Name="Thursday" Type="Int32" />
+          <Property Name="Friday" Type="Int32" />
+          <Property Name="Saturday" Type="Int32" />
+          <Property Name="Sunday" Type="Int32" />
+          <Property Name="Repend" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Reservation">
+          <Key>
+            <PropertyRef Name="reservationId" />
+          </Key>
+          <Property Name="reservationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="eventId" Type="Int32" Nullable="false" />
+          <Property Name="startTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="endTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="created" Type="DateTime" Precision="3" />
+          <Property Name="modified" Type="DateTime" Precision="3" />
+          <Property Name="createdBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="modifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Event" Relationship="Self.Event_Reservation_FK1" FromRole="Reservation" ToRole="Event" />
+          <NavigationProperty Name="ReservationNotes" Relationship="EventManagementSystemModel.FK_ReservationNote_Reservation" FromRole="Reservation" ToRole="ReservationNote" />
+          <NavigationProperty Name="Locations" Relationship="EventManagementSystemModel.ReservationLocation" FromRole="Reservation" ToRole="Location" />
+          <NavigationProperty Name="Options" Relationship="EventManagementSystemModel.ReservationOption" FromRole="Reservation" ToRole="Option" />
+          <NavigationProperty Name="ReservationConsumables" Relationship="EventManagementSystemModel.Reservation_ReservationConsumable_FK1" FromRole="Reservation" ToRole="ReservationConsumable" />
+          <NavigationProperty Name="Users" Relationship="EventManagementSystemModel.ReservationParticipant" FromRole="Reservation" ToRole="User" />
+          <NavigationProperty Name="Resources" Relationship="EventManagementSystemModel.ReservationResource" FromRole="Reservation" ToRole="Resource" />
+          <Property Name="attendeeCountDGS" Type="Int32" />
+          <Property Name="attendeeCountNonDGS" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Resource">
+          <Key>
+            <PropertyRef Name="resourceId" />
+          </Key>
+          <Property Name="resourceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="resourceTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ResourceType" Relationship="Self.ResourceType_Resource_FK1" FromRole="Resource" ToRole="ResourceType" />
+          <NavigationProperty Name="Reservations" Relationship="EventManagementSystemModel.ReservationResource" FromRole="Resource" ToRole="Reservation" />
+        </EntityType>
+        <EntityType Name="ResourceType">
+          <Key>
+            <PropertyRef Name="resourceTypeId" />
+          </Key>
+          <Property Name="resourceTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Resources" Relationship="Self.ResourceType_Resource_FK1" FromRole="ResourceType" ToRole="Resource" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="userId" />
+          </Key>
+          <Property Name="userId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="loginName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="shortName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="company" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="UserFoodProfiles" Relationship="Self.User_UserFoodProfile_FK1" FromRole="User" ToRole="UserFoodProfile" />
+          <NavigationProperty Name="Reservations" Relationship="EventManagementSystemModel.ReservationParticipant" FromRole="User" ToRole="Reservation" />
+          <NavigationProperty Name="Options" Relationship="EventManagementSystemModel.Notifications_OptionUsers" FromRole="User" ToRole="Option" />
+          <Property Name="isActive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="UserFoodProfile">
+          <Key>
+            <PropertyRef Name="userFoodProfileId" />
+          </Key>
+          <Property Name="userFoodProfileId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userId" Type="Int32" Nullable="false" />
+          <Property Name="likes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="dislikes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="User" Relationship="Self.User_UserFoodProfile_FK1" FromRole="UserFoodProfile" ToRole="User" />
+          <NavigationProperty Name="UserFoodProfileDietaryRestrictions" Relationship="Self.UserFoodProfile_UserFoodProfileDietaryRestriction_FK1" FromRole="UserFoodProfile" ToRole="UserFoodProfileDietaryRestriction" />
+        </EntityType>
+        <EntityType Name="UserFoodProfileDietaryRestriction">
+          <Key>
+            <PropertyRef Name="userFoodProfileDietaryRestrictionId" />
+          </Key>
+          <Property Name="userFoodProfileDietaryRestrictionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userFoodProfileId" Type="Int32" />
+          <Property Name="dietaryRestrictionId" Type="Int32" />
+          <NavigationProperty Name="DietaryRestriction" Relationship="Self.DietaryRestriction_UserFoodProfileDietaryRestriction_FK1" FromRole="UserFoodProfileDietaryRestriction" ToRole="DietaryRestriction" />
+          <NavigationProperty Name="UserFoodProfile" Relationship="Self.UserFoodProfile_UserFoodProfileDietaryRestriction_FK1" FromRole="UserFoodProfileDietaryRestriction" ToRole="UserFoodProfile" />
+        </EntityType>
+        <EntityType Name="Vendor">
+          <Key>
+            <PropertyRef Name="vendorId" />
+          </Key>
+          <Property Name="vendorId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Consumables" Relationship="Self.Vendor_Consumable_FK1" FromRole="Vendor" ToRole="Consumable" />
+          <NavigationProperty Name="VendorContacts" Relationship="Self.Vendor_VendorContact_FK1" FromRole="Vendor" ToRole="VendorContact" />
+          <NavigationProperty Name="VendorVendorCategories" Relationship="Self.Vendor_VendorVendorCategory_FK1" FromRole="Vendor" ToRole="VendorVendorCategory" />
+        </EntityType>
+        <EntityType Name="VendorCategory">
+          <Key>
+            <PropertyRef Name="vendorCategoryId" />
+          </Key>
+          <Property Name="vendorCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="VendorVendorCategories" Relationship="Self.VendorCategory_VendorVendorCategory_FK1" FromRole="VendorCategory" ToRole="VendorVendorCategory" />
+        </EntityType>
+        <EntityType Name="VendorContact">
+          <Key>
+            <PropertyRef Name="vendorContactId" />
+          </Key>
+          <Property Name="vendorContactId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="vendorId" Type="Int32" Nullable="false" />
+          <Property Name="contactId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Contact" Relationship="Self.Contact_VendorContact_FK1" FromRole="VendorContact" ToRole="Contact" />
+          <NavigationProperty Name="Vendor" Relationship="Self.Vendor_VendorContact_FK1" FromRole="VendorContact" ToRole="Vendor" />
+        </EntityType>
+        <EntityType Name="VendorVendorCategory">
+          <Key>
+            <PropertyRef Name="vendorVendorCategoryId" />
+          </Key>
+          <Property Name="vendorVendorCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="vendorId" Type="Int32" Nullable="false" />
+          <Property Name="vendorCategoryId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Vendor" Relationship="Self.Vendor_VendorVendorCategory_FK1" FromRole="VendorVendorCategory" ToRole="Vendor" />
+          <NavigationProperty Name="VendorCategory" Relationship="Self.VendorCategory_VendorVendorCategory_FK1" FromRole="VendorVendorCategory" ToRole="VendorCategory" />
+        </EntityType>
+        <EntityType Name="vw_ReservationLocation">
+          <Key>
+            <PropertyRef Name="locationId" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="maxOccupancy" />
+            <PropertyRef Name="reservationLocationId" />
+            <PropertyRef Name="reservationId" />
+            <PropertyRef Name="Expr1" />
+            <PropertyRef Name="Expr2" />
+            <PropertyRef Name="eventId" />
+            <PropertyRef Name="startTime" />
+            <PropertyRef Name="endTime" />
+          </Key>
+          <Property Name="locationId" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="maxOccupancy" Type="Int32" Nullable="false" />
+          <Property Name="reservationLocationId" Type="Int32" Nullable="false" />
+          <Property Name="reservationId" Type="Int32" Nullable="false" />
+          <Property Name="Expr1" Type="Int32" Nullable="false" />
+          <Property Name="Expr2" Type="Int32" Nullable="false" />
+          <Property Name="eventId" Type="Int32" Nullable="false" />
+          <Property Name="startTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="endTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="created" Type="DateTime" Precision="3" />
+          <Property Name="modified" Type="DateTime" Precision="3" />
+          <Property Name="createdBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="modifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="Vendor_Consumable_FK1">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="1" />
+          <End Role="Consumable" Type="Self.Consumable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="vendorId" />
+            </Principal>
+            <Dependent Role="Consumable">
+              <PropertyRef Name="vendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Contact_VendorContact_FK1">
+          <End Role="Contact" Type="Self.Contact" Multiplicity="1" />
+          <End Role="VendorContact" Type="Self.VendorContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contact">
+              <PropertyRef Name="contactId" />
+            </Principal>
+            <Dependent Role="VendorContact">
+              <PropertyRef Name="contactId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="DietaryRestriction_UserFoodProfileDietaryRestriction_FK1">
+          <End Role="DietaryRestriction" Type="Self.DietaryRestriction" Multiplicity="0..1" />
+          <End Role="UserFoodProfileDietaryRestriction" Type="Self.UserFoodProfileDietaryRestriction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DietaryRestriction">
+              <PropertyRef Name="dietaryRestrictionId" />
+            </Principal>
+            <Dependent Role="UserFoodProfileDietaryRestriction">
+              <PropertyRef Name="dietaryRestrictionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Event_Reservation_FK1">
+          <End Role="Event" Type="Self.Event" Multiplicity="1" />
+          <End Role="Reservation" Type="Self.Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="eventId" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="eventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EventStatus_Event_FK1">
+          <End Role="EventStatusChoice" Type="Self.EventStatusChoice" Multiplicity="1" />
+          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EventStatusChoice">
+              <PropertyRef Name="eventStatusId" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="eventStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventIrregularRepeat_Event">
+          <End Role="Event" Type="Self.Event" Multiplicity="1" />
+          <End Role="EventIrregularRepeat" Type="Self.EventIrregularRepeat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="eventId" />
+            </Principal>
+            <Dependent Role="EventIrregularRepeat">
+              <PropertyRef Name="eventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RepeatType_Event_FK1">
+          <End Role="RepeatType" Type="Self.RepeatType" Multiplicity="0..1" />
+          <End Role="Event" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RepeatType">
+              <PropertyRef Name="repeatTypeId" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="repeatTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Location_LocationConfiguration_FK1">
+          <End Role="Location" Type="Self.Location" Multiplicity="1" />
+          <End Role="LocationConfiguration" Type="Self.LocationConfiguration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="locationId" />
+            </Principal>
+            <Dependent Role="LocationConfiguration">
+              <PropertyRef Name="locationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ResourceType_Resource_FK1">
+          <End Role="ResourceType" Type="Self.ResourceType" Multiplicity="1" />
+          <End Role="Resource" Type="Self.Resource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ResourceType">
+              <PropertyRef Name="resourceTypeId" />
+            </Principal>
+            <Dependent Role="Resource">
+              <PropertyRef Name="resourceTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="User_UserFoodProfile_FK1">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserFoodProfile" Type="Self.UserFoodProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="userId" />
+            </Principal>
+            <Dependent Role="UserFoodProfile">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UserFoodProfile_UserFoodProfileDietaryRestriction_FK1">
+          <End Role="UserFoodProfile" Type="Self.UserFoodProfile" Multiplicity="0..1" />
+          <End Role="UserFoodProfileDietaryRestriction" Type="Self.UserFoodProfileDietaryRestriction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserFoodProfile">
+              <PropertyRef Name="userFoodProfileId" />
+            </Principal>
+            <Dependent Role="UserFoodProfileDietaryRestriction">
+              <PropertyRef Name="userFoodProfileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Vendor_VendorContact_FK1">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="1" />
+          <End Role="VendorContact" Type="Self.VendorContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="vendorId" />
+            </Principal>
+            <Dependent Role="VendorContact">
+              <PropertyRef Name="vendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Vendor_VendorVendorCategory_FK1">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="1" />
+          <End Role="VendorVendorCategory" Type="Self.VendorVendorCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="vendorId" />
+            </Principal>
+            <Dependent Role="VendorVendorCategory">
+              <PropertyRef Name="vendorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="VendorCategory_VendorVendorCategory_FK1">
+          <End Role="VendorCategory" Type="Self.VendorCategory" Multiplicity="1" />
+          <End Role="VendorVendorCategory" Type="Self.VendorVendorCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VendorCategory">
+              <PropertyRef Name="vendorCategoryId" />
+            </Principal>
+            <Dependent Role="VendorVendorCategory">
+              <PropertyRef Name="vendorCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EventManagementSystemEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Consumables" EntityType="Self.Consumable" />
+          <EntitySet Name="Contacts" EntityType="Self.Contact" />
+          <EntitySet Name="DietaryRestrictions" EntityType="Self.DietaryRestriction" />
+          <EntitySet Name="Events" EntityType="Self.Event" />
+          <EntitySet Name="EventIrregularRepeats" EntityType="Self.EventIrregularRepeat" />
+          <EntitySet Name="EventStatusChoices" EntityType="Self.EventStatusChoice" />
+          <EntitySet Name="Locations" EntityType="Self.Location" />
+          <EntitySet Name="LocationConfigurations" EntityType="Self.LocationConfiguration" />
+          <EntitySet Name="Logs" EntityType="Self.Log" />
+          <EntitySet Name="RepeatTypes" EntityType="Self.RepeatType" />
+          <EntitySet Name="resdataACNs" EntityType="Self.resdataACN" />
+          <EntitySet Name="resdataACTs" EntityType="Self.resdataACT" />
+          <EntitySet Name="resdataDATs" EntityType="Self.resdataDAT" />
+          <EntitySet Name="resdataRACs" EntityType="Self.resdataRAC" />
+          <EntitySet Name="resdataREPs" EntityType="Self.resdataREP" />
+          <EntitySet Name="Reservations" EntityType="Self.Reservation" />
+          <EntitySet Name="Resources" EntityType="Self.Resource" />
+          <EntitySet Name="ResourceTypes" EntityType="Self.ResourceType" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="UserFoodProfiles" EntityType="Self.UserFoodProfile" />
+          <EntitySet Name="UserFoodProfileDietaryRestrictions" EntityType="Self.UserFoodProfileDietaryRestriction" />
+          <EntitySet Name="Vendors" EntityType="Self.Vendor" />
+          <EntitySet Name="VendorCategories" EntityType="Self.VendorCategory" />
+          <EntitySet Name="VendorContacts" EntityType="Self.VendorContact" />
+          <EntitySet Name="VendorVendorCategories" EntityType="Self.VendorVendorCategory" />
+          <EntitySet Name="vw_ReservationLocation" EntityType="Self.vw_ReservationLocation" />
+          <AssociationSet Name="Vendor_Consumable_FK1" Association="Self.Vendor_Consumable_FK1">
+            <End Role="Vendor" EntitySet="Vendors" />
+            <End Role="Consumable" EntitySet="Consumables" />
+          </AssociationSet>
+          <AssociationSet Name="Contact_VendorContact_FK1" Association="Self.Contact_VendorContact_FK1">
+            <End Role="Contact" EntitySet="Contacts" />
+            <End Role="VendorContact" EntitySet="VendorContacts" />
+          </AssociationSet>
+          <AssociationSet Name="DietaryRestriction_UserFoodProfileDietaryRestriction_FK1" Association="Self.DietaryRestriction_UserFoodProfileDietaryRestriction_FK1">
+            <End Role="DietaryRestriction" EntitySet="DietaryRestrictions" />
+            <End Role="UserFoodProfileDietaryRestriction" EntitySet="UserFoodProfileDietaryRestrictions" />
+          </AssociationSet>
+          <AssociationSet Name="Event_Reservation_FK1" Association="Self.Event_Reservation_FK1">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
+          <AssociationSet Name="EventStatus_Event_FK1" Association="Self.EventStatus_Event_FK1">
+            <End Role="EventStatusChoice" EntitySet="EventStatusChoices" />
+            <End Role="Event" EntitySet="Events" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventIrregularRepeat_Event" Association="Self.FK_EventIrregularRepeat_Event">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="EventIrregularRepeat" EntitySet="EventIrregularRepeats" />
+          </AssociationSet>
+          <AssociationSet Name="RepeatType_Event_FK1" Association="Self.RepeatType_Event_FK1">
+            <End Role="RepeatType" EntitySet="RepeatTypes" />
+            <End Role="Event" EntitySet="Events" />
+          </AssociationSet>
+          <AssociationSet Name="Location_LocationConfiguration_FK1" Association="Self.Location_LocationConfiguration_FK1">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="LocationConfiguration" EntitySet="LocationConfigurations" />
+          </AssociationSet>
+          <AssociationSet Name="ResourceType_Resource_FK1" Association="Self.ResourceType_Resource_FK1">
+            <End Role="ResourceType" EntitySet="ResourceTypes" />
+            <End Role="Resource" EntitySet="Resources" />
+          </AssociationSet>
+          <AssociationSet Name="User_UserFoodProfile_FK1" Association="Self.User_UserFoodProfile_FK1">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserFoodProfile" EntitySet="UserFoodProfiles" />
+          </AssociationSet>
+          <AssociationSet Name="UserFoodProfile_UserFoodProfileDietaryRestriction_FK1" Association="Self.UserFoodProfile_UserFoodProfileDietaryRestriction_FK1">
+            <End Role="UserFoodProfile" EntitySet="UserFoodProfiles" />
+            <End Role="UserFoodProfileDietaryRestriction" EntitySet="UserFoodProfileDietaryRestrictions" />
+          </AssociationSet>
+          <AssociationSet Name="Vendor_VendorContact_FK1" Association="Self.Vendor_VendorContact_FK1">
+            <End Role="Vendor" EntitySet="Vendors" />
+            <End Role="VendorContact" EntitySet="VendorContacts" />
+          </AssociationSet>
+          <AssociationSet Name="Vendor_VendorVendorCategory_FK1" Association="Self.Vendor_VendorVendorCategory_FK1">
+            <End Role="Vendor" EntitySet="Vendors" />
+            <End Role="VendorVendorCategory" EntitySet="VendorVendorCategories" />
+          </AssociationSet>
+          <AssociationSet Name="VendorCategory_VendorVendorCategory_FK1" Association="Self.VendorCategory_VendorVendorCategory_FK1">
+            <End Role="VendorCategory" EntitySet="VendorCategories" />
+            <End Role="VendorVendorCategory" EntitySet="VendorVendorCategories" />
+          </AssociationSet>
+          <EntitySet Name="ReservationNotes" EntityType="EventManagementSystemModel.ReservationNote" />
+          <AssociationSet Name="FK_ReservationNote_Reservation" Association="EventManagementSystemModel.FK_ReservationNote_Reservation">
+            <End Role="Reservation" EntitySet="Reservations" />
+            <End Role="ReservationNote" EntitySet="ReservationNotes" />
+          </AssociationSet>
+          <EntitySet Name="Options" EntityType="EventManagementSystemModel.Option" />
+          <AssociationSet Name="ReservationLocation" Association="EventManagementSystemModel.ReservationLocation">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
+          <AssociationSet Name="ReservationOption" Association="EventManagementSystemModel.ReservationOption">
+            <End Role="Option" EntitySet="Options" />
+            <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
+          <AssociationSet Name="EventLocation" Association="EventManagementSystemModel.EventLocation">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="Location" EntitySet="Locations" />
+          </AssociationSet>
+          <EntitySet Name="ReservationConsumables" EntityType="EventManagementSystemModel.ReservationConsumable" />
+          <AssociationSet Name="Consumable_ReservationConsumable_FK1" Association="EventManagementSystemModel.Consumable_ReservationConsumable_FK1">
+            <End Role="Consumable" EntitySet="Consumables" />
+            <End Role="ReservationConsumable" EntitySet="ReservationConsumables" />
+          </AssociationSet>
+          <AssociationSet Name="Reservation_ReservationConsumable_FK1" Association="EventManagementSystemModel.Reservation_ReservationConsumable_FK1">
+            <End Role="Reservation" EntitySet="Reservations" />
+            <End Role="ReservationConsumable" EntitySet="ReservationConsumables" />
+          </AssociationSet>
+          <AssociationSet Name="ReservationParticipant" Association="EventManagementSystemModel.ReservationParticipant">
+            <End Role="Reservation" EntitySet="Reservations" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="ReservationResource" Association="EventManagementSystemModel.ReservationResource">
+            <End Role="Reservation" EntitySet="Reservations" />
+            <End Role="Resource" EntitySet="Resources" />
+          </AssociationSet>
+          <AssociationSet Name="EventOption" Association="EventManagementSystemModel.EventOption">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="Option" EntitySet="Options" />
+          </AssociationSet>
+          <AssociationSet Name="Notifications_OptionUsers" Association="EventManagementSystemModel.Notifications_OptionUsers">
+            <End Role="Option" EntitySet="Options" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ReservationNote">
+          <Key>
+            <PropertyRef Name="reservationNoteId" />
+          </Key>
+          <Property Name="reservationNoteId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="reservationId" Type="Int32" Nullable="false" />
+          <Property Name="created" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="createdBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Reservation" Relationship="EventManagementSystemModel.FK_ReservationNote_Reservation" FromRole="ReservationNote" ToRole="Reservation" />
+        </EntityType>
+        <Association Name="FK_ReservationNote_Reservation">
+          <End Type="EventManagementSystemModel.Reservation" Role="Reservation" Multiplicity="1" />
+          <End Type="EventManagementSystemModel.ReservationNote" Role="ReservationNote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="reservationId" />
+            </Principal>
+            <Dependent Role="ReservationNote">
+              <PropertyRef Name="reservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Option">
+          <Key>
+            <PropertyRef Name="optionId" />
+          </Key>
+          <Property Name="optionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Reservations" Relationship="EventManagementSystemModel.ReservationOption" FromRole="Option" ToRole="Reservation" />
+          <NavigationProperty Name="Events" Relationship="EventManagementSystemModel.EventOption" FromRole="Option" ToRole="Event" />
+          <NavigationProperty Name="Users" Relationship="EventManagementSystemModel.Notifications_OptionUsers" FromRole="Option" ToRole="User" />
+        </EntityType>
+        <Association Name="ReservationLocation">
+          <End Type="EventManagementSystemModel.Location" Role="Location" Multiplicity="*" />
+          <End Type="EventManagementSystemModel.Reservation" Role="Reservation" Multiplicity="*" />
+        </Association>
+        <Association Name="ReservationOption">
+          <End Type="EventManagementSystemModel.Option" Role="Option" Multiplicity="*" />
+          <End Type="EventManagementSystemModel.Reservation" Role="Reservation" Multiplicity="*" />
+        </Association>
+        <Association Name="EventLocation">
+          <End Type="EventManagementSystemModel.Event" Role="Event" Multiplicity="*" />
+          <End Type="EventManagementSystemModel.Location" Role="Location" Multiplicity="*" />
+        </Association>
+        <EntityType Name="ReservationConsumable">
+          <Key>
+            <PropertyRef Name="reservationId" />
+            <PropertyRef Name="consumableId" />
+          </Key>
+          <Property Name="reservationId" Type="Int32" Nullable="false" />
+          <Property Name="consumableId" Type="Int32" Nullable="false" />
+          <Property Name="quantity" Type="Int32" Nullable="false" />
+          <Property Name="reservationParticipantId" Type="Int32" />
+          <NavigationProperty Name="Consumable" Relationship="EventManagementSystemModel.Consumable_ReservationConsumable_FK1" FromRole="ReservationConsumable" ToRole="Consumable" />
+          <NavigationProperty Name="Reservation" Relationship="EventManagementSystemModel.Reservation_ReservationConsumable_FK1" FromRole="ReservationConsumable" ToRole="Reservation" />
+        </EntityType>
+        <Association Name="Consumable_ReservationConsumable_FK1">
+          <End Type="EventManagementSystemModel.Consumable" Role="Consumable" Multiplicity="1" />
+          <End Type="EventManagementSystemModel.ReservationConsumable" Role="ReservationConsumable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Consumable">
+              <PropertyRef Name="consumableId" />
+            </Principal>
+            <Dependent Role="ReservationConsumable">
+              <PropertyRef Name="consumableId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Reservation_ReservationConsumable_FK1">
+          <End Type="EventManagementSystemModel.Reservation" Role="Reservation" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="EventManagementSystemModel.ReservationConsumable" Role="ReservationConsumable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Reservation">
+              <PropertyRef Name="reservationId" />
+            </Principal>
+            <Dependent Role="ReservationConsumable">
+              <PropertyRef Name="reservationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ReservationParticipant">
+          <End Type="EventManagementSystemModel.Reservation" Role="Reservation" Multiplicity="*" />
+          <End Type="EventManagementSystemModel.User" Role="User" Multiplicity="*" />
+        </Association>
+        <Association Name="ReservationResource">
+          <End Type="EventManagementSystemModel.Reservation" Role="Reservation" Multiplicity="*" />
+          <End Type="EventManagementSystemModel.Resource" Role="Resource" Multiplicity="*" />
+        </Association>
+        <Association Name="EventOption">
+          <End Type="EventManagementSystemModel.Event" Role="Event" Multiplicity="*" />
+          <End Type="EventManagementSystemModel.Option" Role="Option" Multiplicity="*" />
+        </Association>
+        <Association Name="Notifications_OptionUsers">
+          <End Type="EventManagementSystemModel.Option" Role="Option" Multiplicity="*" />
+          <End Type="EventManagementSystemModel.User" Role="User" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EventManagementSystemModelStoreContainer" CdmEntityContainer="EventManagementSystemEntities">
+          <EntitySetMapping Name="Consumables">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.Consumable">
+              <MappingFragment StoreEntitySet="Consumable">
+                <ScalarProperty Name="consumableId" ColumnName="consumableId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="vendorId" ColumnName="vendorId" />
+                <ScalarProperty Name="cost" ColumnName="cost" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contacts">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.Contact">
+              <MappingFragment StoreEntitySet="Contact">
+                <ScalarProperty Name="contactId" ColumnName="contactId" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="officePhone" ColumnName="officePhone" />
+                <ScalarProperty Name="mobilePhone" ColumnName="mobilePhone" />
+                <ScalarProperty Name="address1" ColumnName="address1" />
+                <ScalarProperty Name="address2" ColumnName="address2" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="state" ColumnName="state" />
+                <ScalarProperty Name="postal" ColumnName="postal" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DietaryRestrictions">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.DietaryRestriction">
+              <MappingFragment StoreEntitySet="DietaryRestriction">
+                <ScalarProperty Name="dietaryRestrictionId" ColumnName="dietaryRestrictionId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Events">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.Event">
+              <MappingFragment StoreEntitySet="Event">
+                <ScalarProperty Name="attendeeCountNonDGS" ColumnName="attendeeCountNonDGS" />
+                <ScalarProperty Name="attendeeCountDGS" ColumnName="attendeeCountDGS" />
+                <ScalarProperty Name="modifiedBy" ColumnName="modifiedBy" />
+                <ScalarProperty Name="modified" ColumnName="modified" />
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="created" ColumnName="created" />
+                <ScalarProperty Name="eventId" ColumnName="eventId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="owner" ColumnName="owner" />
+                <ScalarProperty Name="organizer" ColumnName="organizer" />
+                <ScalarProperty Name="eventStatusId" ColumnName="eventStatusId" />
+                <ScalarProperty Name="requestDate" ColumnName="requestDate" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="repeatEnd" ColumnName="repeatEnd" />
+                <ScalarProperty Name="repeatDay" ColumnName="repeatDay" />
+                <ScalarProperty Name="repeatMonth" ColumnName="repeatMonth" />
+                <ScalarProperty Name="repeatMonthWeek" ColumnName="repeatMonthWeek" />
+                <ScalarProperty Name="repeatMonthlyWeekday" ColumnName="repeatMonthlyWeekday" />
+                <ScalarProperty Name="repeatYear" ColumnName="repeatYear" />
+                <ScalarProperty Name="repeatWeek" ColumnName="repeatWeek" />
+                <ScalarProperty Name="repeatWeekday" ColumnName="repeatWeekday" />
+                <ScalarProperty Name="notes" ColumnName="notes" />
+                <ScalarProperty Name="repeatTypeId" ColumnName="repeatTypeId" />
+                <ScalarProperty Name="repeatIrregular" ColumnName="repeatIrregular" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventIrregularRepeats">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.EventIrregularRepeat">
+              <MappingFragment StoreEntitySet="EventIrregularRepeat">
+                <ScalarProperty Name="eventIrregularRepeatId" ColumnName="eventIrregularRepeatId" />
+                <ScalarProperty Name="eventId" ColumnName="eventId" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventStatusChoices">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.EventStatusChoice">
+              <MappingFragment StoreEntitySet="EventStatusChoice">
+                <ScalarProperty Name="eventStatusId" ColumnName="eventStatusId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.Location">
+              <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="locationId" ColumnName="locationId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="maxOccupancy" ColumnName="maxOccupancy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LocationConfigurations">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.LocationConfiguration">
+              <MappingFragment StoreEntitySet="LocationConfiguration">
+                <ScalarProperty Name="locationConfigurationId" ColumnName="locationConfigurationId" />
+                <ScalarProperty Name="locationId" ColumnName="locationId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Logs">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.Log">
+              <MappingFragment StoreEntitySet="Log">
+                <ScalarProperty Name="logId" ColumnName="logId" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="action" ColumnName="action" />
+                <ScalarProperty Name="data" ColumnName="data" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RepeatTypes">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.RepeatType">
+              <MappingFragment StoreEntitySet="RepeatType">
+                <ScalarProperty Name="repeatTypeId" ColumnName="repeatTypeId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="resdataACNs">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.resdataACN">
+              <MappingFragment StoreEntitySet="resdataACN">
+                <ScalarProperty Name="Rec_No" ColumnName="Rec No" />
+                <ScalarProperty Name="Actnumber" ColumnName="Actnumber" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="resdataACTs">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.resdataACT">
+              <MappingFragment StoreEntitySet="resdataACT">
+                <ScalarProperty Name="Rec_No" ColumnName="Rec No" />
+                <ScalarProperty Name="Actnumber" ColumnName="Actnumber" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Client" ColumnName="Client" />
+                <ScalarProperty Name="Prime" ColumnName="Prime" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Changedate" ColumnName="Changedate" />
+                <ScalarProperty Name="Changetime" ColumnName="Changetime" />
+                <ScalarProperty Name="Lock" ColumnName="Lock" />
+                <ScalarProperty Name="Repeattype" ColumnName="Repeattype" />
+                <ScalarProperty Name="Tentative" ColumnName="Tentative" />
+                <ScalarProperty Name="Private" ColumnName="Private" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
+                <ScalarProperty Name="Inactive" ColumnName="Inactive" />
+                <ScalarProperty Name="Misc" ColumnName="Misc" />
+                <ScalarProperty Name="Forecolour" ColumnName="Forecolour" />
+                <ScalarProperty Name="Backcolour" ColumnName="Backcolour" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="resdataDATs">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.resdataDAT">
+              <MappingFragment StoreEntitySet="resdataDAT">
+                <ScalarProperty Name="Rec_No" ColumnName="Rec No" />
+                <ScalarProperty Name="Actnumber" ColumnName="Actnumber" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Actualstart" ColumnName="Actualstart" />
+                <ScalarProperty Name="Actualend" ColumnName="Actualend" />
+                <ScalarProperty Name="Endtime" ColumnName="Endtime" />
+                <ScalarProperty Name="Enddate" ColumnName="Enddate" />
+                <ScalarProperty Name="Actualdate" ColumnName="Actualdate" />
+                <ScalarProperty Name="Actualenddate" ColumnName="Actualenddate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="resdataRACs">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.resdataRAC">
+              <MappingFragment StoreEntitySet="resdataRAC">
+                <ScalarProperty Name="Rec_No" ColumnName="Rec No" />
+                <ScalarProperty Name="Actnumber" ColumnName="Actnumber" />
+                <ScalarProperty Name="Resource" ColumnName="Resource" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="resdataREPs">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.resdataREP">
+              <MappingFragment StoreEntitySet="resdataREP">
+                <ScalarProperty Name="Rec_No" ColumnName="Rec No" />
+                <ScalarProperty Name="Actnumber" ColumnName="Actnumber" />
+                <ScalarProperty Name="Repnumber" ColumnName="Repnumber" />
+                <ScalarProperty Name="Weekendrepeat" ColumnName="Weekendrepeat" />
+                <ScalarProperty Name="Week" ColumnName="Week" />
+                <ScalarProperty Name="Weekday" ColumnName="Weekday" />
+                <ScalarProperty Name="Monday" ColumnName="Monday" />
+                <ScalarProperty Name="Tuesday" ColumnName="Tuesday" />
+                <ScalarProperty Name="Wednesday" ColumnName="Wednesday" />
+                <ScalarProperty Name="Thursday" ColumnName="Thursday" />
+                <ScalarProperty Name="Friday" ColumnName="Friday" />
+                <ScalarProperty Name="Saturday" ColumnName="Saturday" />
+                <ScalarProperty Name="Sunday" ColumnName="Sunday" />
+                <ScalarProperty Name="Repend" ColumnName="Repend" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reservations">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.Reservation">
+              <MappingFragment StoreEntitySet="Reservation">
+                <ScalarProperty Name="attendeeCountNonDGS" ColumnName="attendeeCountNonDGS" />
+                <ScalarProperty Name="attendeeCountDGS" ColumnName="attendeeCountDGS" />
+                <ScalarProperty Name="reservationId" ColumnName="reservationId" />
+                <ScalarProperty Name="eventId" ColumnName="eventId" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="created" ColumnName="created" />
+                <ScalarProperty Name="modified" ColumnName="modified" />
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="modifiedBy" ColumnName="modifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Resources">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.Resource">
+              <MappingFragment StoreEntitySet="Resource">
+                <ScalarProperty Name="resourceId" ColumnName="resourceId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="resourceTypeId" ColumnName="resourceTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ResourceTypes">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.ResourceType">
+              <MappingFragment StoreEntitySet="ResourceType">
+                <ScalarProperty Name="resourceTypeId" ColumnName="resourceTypeId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="loginName" ColumnName="loginName" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="shortName" ColumnName="shortName" />
+                <ScalarProperty Name="company" ColumnName="company" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserFoodProfiles">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.UserFoodProfile">
+              <MappingFragment StoreEntitySet="UserFoodProfile">
+                <ScalarProperty Name="userFoodProfileId" ColumnName="userFoodProfileId" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="likes" ColumnName="likes" />
+                <ScalarProperty Name="dislikes" ColumnName="dislikes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserFoodProfileDietaryRestrictions">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.UserFoodProfileDietaryRestriction">
+              <MappingFragment StoreEntitySet="UserFoodProfileDietaryRestriction">
+                <ScalarProperty Name="userFoodProfileDietaryRestrictionId" ColumnName="userFoodProfileDietaryRestrictionId" />
+                <ScalarProperty Name="userFoodProfileId" ColumnName="userFoodProfileId" />
+                <ScalarProperty Name="dietaryRestrictionId" ColumnName="dietaryRestrictionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Vendors">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.Vendor">
+              <MappingFragment StoreEntitySet="Vendor">
+                <ScalarProperty Name="vendorId" ColumnName="vendorId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VendorCategories">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.VendorCategory">
+              <MappingFragment StoreEntitySet="VendorCategory">
+                <ScalarProperty Name="vendorCategoryId" ColumnName="vendorCategoryId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VendorContacts">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.VendorContact">
+              <MappingFragment StoreEntitySet="VendorContact">
+                <ScalarProperty Name="vendorContactId" ColumnName="vendorContactId" />
+                <ScalarProperty Name="vendorId" ColumnName="vendorId" />
+                <ScalarProperty Name="contactId" ColumnName="contactId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VendorVendorCategories">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.VendorVendorCategory">
+              <MappingFragment StoreEntitySet="VendorVendorCategory">
+                <ScalarProperty Name="vendorVendorCategoryId" ColumnName="vendorVendorCategoryId" />
+                <ScalarProperty Name="vendorId" ColumnName="vendorId" />
+                <ScalarProperty Name="vendorCategoryId" ColumnName="vendorCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_ReservationLocation">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.vw_ReservationLocation">
+              <MappingFragment StoreEntitySet="vw_ReservationLocation">
+                <ScalarProperty Name="locationId" ColumnName="locationId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="maxOccupancy" ColumnName="maxOccupancy" />
+                <ScalarProperty Name="reservationLocationId" ColumnName="reservationLocationId" />
+                <ScalarProperty Name="reservationId" ColumnName="reservationId" />
+                <ScalarProperty Name="Expr1" ColumnName="Expr1" />
+                <ScalarProperty Name="Expr2" ColumnName="Expr2" />
+                <ScalarProperty Name="eventId" ColumnName="eventId" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="created" ColumnName="created" />
+                <ScalarProperty Name="modified" ColumnName="modified" />
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="modifiedBy" ColumnName="modifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReservationNotes">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.ReservationNote">
+              <MappingFragment StoreEntitySet="ReservationNote">
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="created" ColumnName="created" />
+                <ScalarProperty Name="reservationId" ColumnName="reservationId" />
+                <ScalarProperty Name="reservationNoteId" ColumnName="reservationNoteId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Options">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.Option">
+              <MappingFragment StoreEntitySet="Option">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="optionId" ColumnName="optionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ReservationLocation" TypeName="EventManagementSystemModel.ReservationLocation" StoreEntitySet="ReservationLocation">
+            <EndProperty Name="Reservation">
+              <ScalarProperty Name="reservationId" ColumnName="reservationId" />
+            </EndProperty>
+            <EndProperty Name="Location">
+              <ScalarProperty Name="locationId" ColumnName="locationId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ReservationOption" TypeName="EventManagementSystemModel.ReservationOption" StoreEntitySet="ReservationOption">
+            <EndProperty Name="Reservation">
+              <ScalarProperty Name="reservationId" ColumnName="reservationId" />
+            </EndProperty>
+            <EndProperty Name="Option">
+              <ScalarProperty Name="optionId" ColumnName="optionId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="EventLocation" TypeName="EventManagementSystemModel.EventLocation" StoreEntitySet="EventLocation">
+            <EndProperty Name="Location">
+              <ScalarProperty Name="locationId" ColumnName="locationId" />
+            </EndProperty>
+            <EndProperty Name="Event">
+              <ScalarProperty Name="eventId" ColumnName="eventId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="ReservationConsumables">
+            <EntityTypeMapping TypeName="EventManagementSystemModel.ReservationConsumable">
+              <MappingFragment StoreEntitySet="ReservationConsumable">
+                <ScalarProperty Name="reservationParticipantId" ColumnName="reservationParticipantId" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="consumableId" ColumnName="consumableId" />
+                <ScalarProperty Name="reservationId" ColumnName="reservationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ReservationParticipant" TypeName="EventManagementSystemModel.ReservationParticipant" StoreEntitySet="ReservationParticipant">
+            <EndProperty Name="User">
+              <ScalarProperty Name="userId" ColumnName="userId" />
+            </EndProperty>
+            <EndProperty Name="Reservation">
+              <ScalarProperty Name="reservationId" ColumnName="reservationId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ReservationResource" TypeName="EventManagementSystemModel.ReservationResource" StoreEntitySet="ReservationResource">
+            <EndProperty Name="Resource">
+              <ScalarProperty Name="resourceId" ColumnName="resourceId" />
+            </EndProperty>
+            <EndProperty Name="Reservation">
+              <ScalarProperty Name="reservationId" ColumnName="reservationId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="EventOption" TypeName="EventManagementSystemModel.EventOption" StoreEntitySet="EventOption">
+            <EndProperty Name="Option">
+              <ScalarProperty Name="optionId" ColumnName="optionId" />
+            </EndProperty>
+            <EndProperty Name="Event">
+              <ScalarProperty Name="eventId" ColumnName="eventId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="Notifications_OptionUsers" TypeName="EventManagementSystemModel.Notifications_OptionUsers" StoreEntitySet="Notifications_OptionUsers">
+            <EndProperty Name="User">
+              <ScalarProperty Name="userId" ColumnName="userId" />
+            </EndProperty>
+            <EndProperty Name="Option">
+              <ScalarProperty Name="optionId" ColumnName="optionId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

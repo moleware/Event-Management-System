@@ -1,0 +1,99 @@
+﻿@model EventManagementSystem.Models.Reservation
+
+<style>
+    .panel {
+        margin-bottom: 1em;
+        color: #333333;
+        clear: both;
+    }
+
+    .panel-heading {
+        font-weight: bold;
+        background-color: #333333;
+        color: #eeeeee;
+        padding: 1em;
+        clear: both;
+    }
+
+    .panel-body {
+        padding: 1em;
+        clear: both;
+    }
+
+        .panel-body p, .panel-body > div {
+            margin-left: 1em;
+        }
+
+    table tr td {
+        padding: 0 1em;
+    }
+</style>
+<p>This is to confirm your reservation for the event <b>&quot;@Model.Event.name&quot;</b> in <b>Room(s): @(String.Join(", ", Model.Locations.OrderBy(rl => rl.locationId).Select(rl => rl.name).Distinct()))</b> on <b>@(Model.startTime.ToShortDateString())</b></p>
+<div class="panel">
+    <div class="panel-heading">
+        <p>Details:</p>
+    </div>
+    <div class="panel-body">
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>@Model.Event.name</td>
+            </tr>
+            <tr>
+                <td>Total Attendees</td>
+                <td>@Helpers.GetTotalAttendees(Model.attendeeCountDGS, Model.attendeeCountNonDGS)</td>
+            </tr>
+            <tr>
+                <td>DGS Attendees</td>
+                <td>@Helpers.GetIntOrZero(Model.attendeeCountDGS)</td>
+            </tr>
+            <tr>
+                <td>Non-DGS Attendees</td>
+                <td>@Helpers.GetIntOrZero(Model.attendeeCountNonDGS)</td>
+            </tr>
+            <tr>
+                <td>Owner</td>
+                <td>@Helpers.GetUserShortName(Model.Event.owner)</td>
+            </tr>
+            <tr>
+                <td>Organizer</td>
+                <td>@Helpers.GetUserShortName(Model.Event.organizer)</td>
+            </tr>
+            <tr>
+                <td>Start Time</td>
+                <td>@Model.startTime.ToShortDateString() @Model.startTime.ToShortTimeString()</td>
+            </tr>
+            <tr>
+                <td>End Time</td>
+                <td>@Model.endTime.ToShortDateString() @Model.endTime.ToShortTimeString()</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class='panel'>
+    <div class='panel-heading'>
+        <p>Notes:</p>
+    </div>
+    <div class='panel-body'>
+        @if (Model.ReservationNotes != null)
+        {
+            foreach (var rn in Model.ReservationNotes)
+            {
+                <p><strong>@rn.created.ToString("M/d") (@rn.createdBy)</strong></p>
+                <p>@Html.Raw(rn.note == null ? "" : rn.note.Replace("\n", "<br />"))</p>
+                <hr/>
+            }
+        }
+    </div>
+</div>
+<div class='panel'>
+    <div class='panel-heading'>
+        <p>Options:</p>
+    </div>
+    <div class='panel-body'>
+        @foreach (var opt in Model.Options.Select(ro => ro.name).Distinct())
+        {
+            <p>@(opt)</p>
+        }
+    </div>
+</div>

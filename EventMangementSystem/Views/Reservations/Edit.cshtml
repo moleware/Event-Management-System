@@ -1,0 +1,337 @@
+﻿@model EventManagementSystem.Models.Reservation
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "EditReservationForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.reservationId)
+    @Html.HiddenFor(model => model.eventId)
+    @Html.HiddenFor(model => model.createdBy)
+    @Html.HiddenFor(model => model.created)
+    <input type="hidden" value="@DateTime.Now" name="modified" />
+    <input type="hidden" value="@(Helpers.GetUser(User.Identity).loginName)" name="modifiedBy" />
+
+    <div class="container">
+        <div id="Alert" class="col-xs-12 nav navbar-fixed-bottom">
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group col-sm-12">
+                <div class="modal fade" id="ModalConfirmation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Confirmation Email</h4>
+                                <button type="button" class="send btn btn-primary">Send Email</button>
+                            </div>
+                            <div class="clearfix modal-body">
+                                <div class="checkbox col-xs-12">
+                                    <label>
+                                        <input type="checkbox" id="IsAddOn" name="IsAddOn" /><span>Add On?</span>
+                                    </label>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    <input class="form-control" type="text" id="ConfirmationEmailAdditionalText" name="AdditionalText" placeholder="Additional Text" />
+                                </div>
+                                <hr />
+                                <div id="FormMail" class="col-xs-12">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="send btn btn-primary">Send Email</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 modal fade" id="NoteModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title">New Note</h4>
+                            </div>
+                            <div class="modal-body">
+                                <textarea class="form-control" id="NewNote" name="NewNote" rows="5"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button id="SaveNoteModal" type="button" data-dismiss="modal" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+                <div id="ConfirmationMessage" class="hide alert alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <span id="MessageText"></span>
+                </div>
+            </div>
+            <div class="form-group col-xs-6">
+                <h2>@Model.Event.name</h2>
+            </div>
+            <div class="form-group col-xs-6">
+                <div class="btn-group pull-right">
+                    <span class="btn btn-default">Actions</span>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a id="btnConfirmation" href="#">Send Confirmation</a></li>
+                        <li class="divider"></li>
+                        <li><a id="btnDeleteReservation" href="#">Delete Reservation</a></li>
+                        <li class="divider"></li>
+                        <li><a id="btnSaveReservation" href="#">Save Changes</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Reservation Details</h2>
+                </div>
+                <div class="panel-body">
+                    @Html.EditorFor(model => model.attendeeCountDGS)
+                    @Html.EditorFor(model => model.attendeeCountNonDGS)
+                    @Html.EditorFor(model => model.startTime, new { AddPicker = "datetime", ShowLabel = true, PickerId = "StartTimePicker" })
+                    @Html.EditorFor(model => model.endTime, new { AddPicker = "datetime", ShowLabel = true, PickerId = "EndTimePicker" })
+                    <div class="form-group">
+                        <label for="ReservationLocation">Location(s)</label>
+                        @Html.ListBox("ReservationLocation", (List<SelectListItem>)ViewBag.LocationList, new { @class = "form-control", size = ((List<SelectListItem>)ViewBag.LocationList).Count() })
+                    </div>
+                    <div class="form-group">
+                        <label for="ReservationOption">Options: </label>
+                        <div class="well">
+                            @foreach (var o in ViewBag.Options)
+                            {
+                                <div class="checkbox" id="ReservationOptionsCheckboxList">
+                                    <label>
+                                        <input type="checkbox" name="ReservationOption" value="@o.Value" checked="@o.Selected" />
+                                        @o.Text
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <p>Created: @(Model.created.HasValue ? Model.created.Value.ToShortDateString() : "") by @(Helpers.GetUserShortName(Model.createdBy)) </p>
+                    <p>Last Modified: @(Model.modified.HasValue ? Model.modified.Value.ToShortDateString() : "") by @(Helpers.GetUserShortName(Model.modifiedBy)) </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Event Details</h2>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Owner: </strong>@(Helpers.GetUserShortName(Model.Event.owner))</li>
+                            <li class="list-group-item"><strong>Organizer: </strong>@(Helpers.GetUserShortName(Model.Event.organizer))</li>
+                            <li class="list-group-item"><strong>Event Notes: </strong><p>@Html.Raw((Model.Event.notes ?? "").ToString().Replace("\r\n", "<br/>"))</p></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div id="NotesPanel" class="panel panel-default">
+                    <div class="clearfix panel-heading">
+                        <h2 class="pull-left panel-title">Reservation Notes</h2>
+                        @if (User.IsScheduler())
+                        {
+                            <a role="button" data-toggle="modal" data-target="#NoteModal" id="AddNote" name="AddNote" class="pull-right btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                        }
+                    </div>
+                    <div class="panel-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrapdatetimepicker")
+
+
+    <script type="text/javascript">
+        var reservationid = @Model.reservationId;
+
+        $(document).ready(function() {
+            LoadNotes(reservationid);
+            LoadEmailBody(reservationid);
+        });
+        
+        $(function() {
+            $('#NoteModal').on('shown.bs.modal', function () {
+                $('#NewNote').focus();
+            })
+
+            $("#SaveNoteModal").on('click', function () {
+                $(this).addClass('disabled');
+                SaveReservationNote();
+                $('#SaveNoteModal').removeClass('disabled');
+                $('#NoteModal').modal('dismiss');
+            });
+
+            $('#btnConfirmation').on('click', function () {
+                $('#ModalConfirmation').modal('show')
+            });
+
+            $('button.send').on('click', function (e) {
+                $(this).addClass('disabled');
+                var body = "<p>" + $("#ConfirmationEmailAdditionalText").val() + "</p>" + $('#ModalConfirmation #FormMail').html();
+                var isAddOn = $("#IsAddOn").prop('checked');
+                $.ajax({
+                    url: '/Reservations/_SendConfirmationEmail',
+                    data: {reservationId: reservationid, body: body, isAddOn: isAddOn},
+                    type: "POST"
+                }).done(function (data) {
+                    var r = $.parseJSON(data);
+                    CreateAlert(r.message, r.class);
+                }).error(function (e) {
+                    CreateAlert(e, "danger");
+                }).always(function () {
+                    $('button.send').removeClass('disabled');
+                    $('#ModalConfirmation').modal('hide')
+                });
+            });
+
+            $("#btnSaveReservation").on('click', function() {
+                UpdateReservation();
+            });
+
+            $(".datetimepicker").on('dp.change', function(e) {
+                SynchStartAndEndTimePickers($("#StartTimePicker"), $("#EndTimePicker"), 1, 1);
+            });
+
+            $("#btnDeleteReservation").on('click', function() {
+                var form = $("#EditReservationForm").serializeObject();
+                var model = {
+                    "reservation": form,
+                };
+                $.ajax({
+                    url: '/Reservations/AsyncDelete',
+                    data: JSON.stringify(model),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8"
+                }).done(function (data) {
+                    var r = $.parseJSON(data);
+                    CreateAlert(r.message, r.class);
+                    LoadNotes(reservationid);
+                    if (r.returnpath != null)
+                    {
+                        window.location.href=r.returnpath;
+                    }
+                });
+                
+            });
+        });
+
+
+        function UpdateReservation()
+        {
+            var form = $("#EditReservationForm").serializeObject();
+            var reservationOptions = [];
+            $('input[name=ReservationOption]:checked').each(function() {
+                reservationOptions.push($(this).val());
+            });
+            var model = {
+                "reservation": form,
+                "ReservationLocation": $("#ReservationLocation").val(),
+                "ReservationOption": reservationOptions
+            };
+            $.ajax({
+                url: '/Reservations/AsyncEdit',
+                data: JSON.stringify(model),
+                type: "POST",
+                contentType: "application/json; charset=utf-8"
+            }).done(function (data) {
+                var r = $.parseJSON(data);
+                CreateAlert(r.message, r.class);
+                LoadNotes(reservationid);
+                if (r.returnpath != null)
+                {
+                    window.location.href=r.returnpath;
+                }
+            });
+        }
+
+        function LoadEmailBody()
+        {
+            $.ajax({
+                url: '/Reservations/_ReservationConfirmationEmail',
+                data: {id: reservationid},
+                type: "GET",
+                cache: false
+            }).done(function (data) {
+                $('#ModalConfirmation #FormMail').html(data);
+            });
+        };
+
+        function SaveReservationNote() {
+            var d = @(DateTime.Now.ToShortDateString());
+            var note = $("#NewNote").val();
+            $.ajax({
+                url: '/Reservations/_AddNote',
+                data: { date: d, id: reservationid, note: note },
+                type: "POST"
+            }).done(function (data) {
+                var r = $.parseJSON(data);
+                CreateAlert(r.message, r.class);
+                $("#NewNote").val("");
+            }).error(function (e) {
+                CreateAlert(e, "danger");
+            }).complete(function() {
+                LoadNotes(reservationid);            
+            });
+    
+        };
+
+        function DeleteReservationNote(reservationid, noteid) {
+            $.ajax({
+                url: '/Reservations/_DeleteReservationNote',
+                data: {id: noteid},
+                type: "POST"
+            }).done(function (data) {
+                var r = $.parseJSON(data);
+                CreateAlert(r.message, r.class);
+            }).error(function (e) {
+                CreateAlert(e, "danger");
+            }).complete(function() {
+                LoadNotes(reservationid);
+            });
+        }
+
+        function LoadNotes(reservationid)
+        {
+            $.ajax({
+                url: '/Reservations/_GetNotes',
+                data: { id: reservationid },
+                type: "GET",
+                cache: false
+            }).done(function (data) {
+                $("#NotesPanel .panel-body").html(data);
+            }).complete(function () {
+                $("span.deleteNote").on('click', function() {
+                    var noteid = $(this).data("id");
+                    DeleteReservationNote(reservationid, noteid);
+                });
+            }).error(function (e) {
+                $("#NotesPanel .panel-body").html(e);
+            });
+        }
+    </script>
+
+}

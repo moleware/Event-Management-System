@@ -1,0 +1,147 @@
+﻿@model IEnumerable<EventManagementSystem.Models.Event>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.owner)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.organizer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.requestDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.startTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.endTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendeeCountDGS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendeeCountNonDGS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.repeatEnd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.repeatDay)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.repeatMonth)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.repeatMonthWeek)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.repeatMonthlyWeekday)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.repeatYear)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.repeatWeek)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.repeatWeekday)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.notes)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.repeatIrregular)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EventStatusChoice.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RepeatType.name)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.owner)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.organizer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.requestDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.startTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.endTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.attendeeCountDGS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.attendeeCountNonDGS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.repeatEnd)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.repeatDay)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.repeatMonth)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.repeatMonthWeek)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.repeatMonthlyWeekday)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.repeatYear)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.repeatWeek)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.repeatWeekday)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.notes)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.repeatIrregular)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EventStatusChoice.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RepeatType.name)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.eventId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.eventId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.eventId })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,159 @@
+﻿@model EventManagementSystem.Models.EventViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div id="Alert" class="navbar navbar-fixed-bottom">
+</div>
+@if (User.IsInRole("dgslaw\\ems_scheduling"))
+{
+    <div class="row">
+        <div class="col-sm-4">
+            <div id="btnConfirmation" class="btn btn-default">Send Confirmation</div>
+        </div>
+        <div class="col-sm-8">
+            <div class="modal fade" id="ModalConfirmation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Confirmation Email</h4>
+                            <button type="button" class="send btn btn-primary">Send Email</button>
+                        </div>
+                        <div class="clearfix modal-body">
+                            <div class="checkbox col-xs-12">
+                                <label>
+                                    <input type="checkbox" id="IsAddOn" name="IsAddOn" /><span>Add On?</span>
+                                </label>
+                            </div>
+                            <div class="form-group col-xs-12">
+                                <input class="form-control" type="text" id="ConfirmationEmailAdditionalText" name="AdditionalText" placeholder="Additional Text" />
+                            </div>
+                            <hr />
+                            <div id="FormMail" class="col-xs-12">
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="send btn btn-primary">Send Email</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>
+                @Html.DisplayFor(model => model.Event.name, new { htmlAttributes = new { @class = "form-control" } })
+                <span class="pull-right badge">@(Helpers.GetTotalAttendees(Model.Event.attendeeCountDGS, Model.Event.attendeeCountNonDGS))</span>
+            </h2>
+        </div>
+        <div class="panel-body">
+            <div class="form-group col-sm-12">
+                <strong>Time:</strong> @(String.Format("{0}: {1}-{2}", Model.Event.startTime.ToShortDateString(), Model.Event.startTime.ToShortTimeString(), Model.Event.endTime.ToShortTimeString()))
+            </div>
+            <div class="form-group col-sm-12">
+                <strong>Owner:</strong> @(Helpers.GetUserShortName(Model.Event.owner))
+            </div>
+            <div class="form-group col-sm-12">
+                <strong>Organizer:</strong> @(Helpers.GetUserShortName(Model.Event.organizer))
+            </div>
+            <div class="form-group col-sm-12">
+                <label for="Locations" class="control-label">Location(s)</label>
+                <div class="well">
+                    @(String.Join(", ", Model.Event.Locations.Select(l => l.name)))
+                </div>
+            </div>
+            @if (Model.Event.Options != null && Model.Event.Options.Count() > 0)
+            {
+                <div class="form-group col-sm-12">
+                    <label for="options" class="control-label">Option(s)</label>
+                    <div class="well">
+                        @(String.Join(", ", Model.Event.Options.Select(o => o.name)))
+                    </div>
+                </div>
+            }
+            <div class="form-group col-sm-12">
+                <label for="notes" class="control-label">Notes</label>
+                <div class="well">@Html.Raw(Model.Event.notes != null ? Model.Event.notes.Replace("\r\n", "<br/>") : "")</div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            @if (Model.Event.created.HasValue)
+            {
+                <p>Created: @(Model.Event.created.HasValue ? Model.Event.created.Value.ToShortDateString() : "") by @(Helpers.GetUserShortName(Model.Event.createdBy)) </p>
+                <p>Last Modified: @(Model.Event.modified.HasValue ? Model.Event.modified.Value.ToShortDateString() : "") by @(Helpers.GetUserShortName(Model.Event.modifiedBy)) </p>
+            }
+        </div>
+    </div>
+</div>
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>
+                Reservations
+                <a class="pull-right btn btn-default" href="@Url.Action("Create", "Reservations", new { eventId = Model.Event.eventId })">Create New Reservation</a>
+            </h2>
+        </div>
+        <div id="Reservations" class="panel-body">
+            
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+    $(function () {
+        $.ajax({
+            url: '/Events/_FetchReservations',
+            data: { eventId: @Model.Event.eventId },
+            traditional: true,
+            cache: false
+        }).done(function (data) {
+            SetData(data, $("#Reservations"));
+        }).error(function (jqXHR, textStatus, errorThrown) {
+            SetData(jqXHR, $("#Reservations"));
+        }).always(function () {
+        });
+        $('#btnConfirmation').on('click', function () {
+            $('#ModalConfirmation').modal('show')
+        });
+        $(document).ready(function () {
+            $.ajax({
+                url: '/Events/_ShowConfirmationEmail',
+                data: { eventId: @Model.Event.eventId }
+            }).done(function (data) {
+                $('#ModalConfirmation #FormMail').html(data);
+            });
+        });
+
+        $('button.send').on('click', function (e) {
+            $(this).addClass('disabled');
+            var eventId = @Model.Event.eventId;
+            var body = "<p>" + $("#ConfirmationEmailAdditionalText").val() + "</p>" + $('#ModalConfirmation #FormMail').html();
+            var isAddOn = $("#IsAddOn").prop('checked');
+            $.ajax({
+                url: '/Events/_SendConfirmationEmail',
+                data: {eventId: eventId, body: body, isAddOn: isAddOn},
+                type: "POST"
+            }).done(function (data) {
+                var r = $.parseJSON(data);
+                CreateAlert(r.Message, r.Class)
+            }).complete(function () {
+            }).error(function (e) {
+                CreateAlert(e, "danger")
+            }).always(function () {
+                $('button.send').removeClass('disabled');
+                $('#ModalConfirmation').modal('hide')
+            });
+
+        });
+    });
+    </script>
+}

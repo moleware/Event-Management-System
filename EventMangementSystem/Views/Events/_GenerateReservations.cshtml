@@ -1,0 +1,32 @@
+﻿@model IEnumerable<EventManagementSystem.Models.ReservationViewModel>
+
+<div class="list-group">
+@foreach (var r in Model)
+{
+    <div data-attendeecount="@(Json.Encode(r.Reservation.attendeeCount == null ? 0 : r.Reservation.attendeeCount))" 
+         data-attendeecountdgs="@(Json.Encode(r.Reservation.attendeeCountDGS == null ? 0 : r.Reservation.attendeeCountDGS))" 
+         data-attendeecountnondgs="@(Json.Encode(r.Reservation.attendeeCountNonDGS == null ? 0 : r.Reservation.attendeeCountNonDGS))" 
+         data-endtime="@r.Reservation.endTime.ToString("o")" 
+         data-starttime="@r.Reservation.startTime.ToString("o")" 
+         data-options="@(Json.Encode(r.Reservation.Options.Select(ro => ro.optionId)))" 
+         data-locations="@(Json.Encode(r.Reservation.Locations.Select(rl => rl.locationId)))" 
+         class="list-group-item clearfix @(r.conflicts != null && r.conflicts.Count() > 0 ? "list-group-item-danger" : "")">
+        <div class="pull-right badge">@r.Reservation.attendeeCount</div>
+        <p><strong>@r.Reservation.startTime.ToShortDateString()</strong> @r.Reservation.startTime.ToShortTimeString() - @r.Reservation.endTime.ToShortTimeString()</p>
+        <p>@(String.Join(", ", r.Reservation.Locations.Select(rl => rl.name)))</p>
+        <p>@(String.Join(", ", r.Reservation.Options.Select(ro => ro.name)))</p>
+        @if (r.conflicts.Count() > 0)
+        {
+            <div class="well">
+                <p>@Html.Raw(String.Join("<br/>", r.conflicts.Select(c => Helpers.GetUserShortName(c.Event.owner) + " - " + c.Event.name + " - " + String.Join("|", c.Locations.Select(rl => rl.name)))))</p>
+            </div>
+        }
+        <div class="pull-right btn btn-default btn-sm deleteReservation">Remove</div>
+    </div>
+}
+</div>
+<script type="text/javascript">
+    $(".deleteReservation").on('click', function () {
+        $(this).parent(".list-group-item").remove();
+    })
+</script>

@@ -1,0 +1,211 @@
+﻿@model EventManagementSystem.Models.Reservation
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "CreateReservationForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.reservationId)
+    @Html.HiddenFor(model => model.eventId)
+    
+    <input type="hidden" value="@DateTime.Now" name="created" />
+    <input type="hidden" value="@(Helpers.GetUser(User.Identity).loginName)" name="createdBy" />
+    <input type="hidden" value="@DateTime.Now" name="modified" />
+    <input type="hidden" value="@(Helpers.GetUser(User.Identity).loginName)" name="modifiedBy" />
+
+    
+    <div class="container">
+        <div id="Alert" class="col-xs-12 nav navbar-fixed-bottom">
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group col-sm-12">
+                @*<div class="modal fade" id="ModalConfirmation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Confirmation Email</h4>
+                                <button type="button" class="send btn btn-primary">Send Email</button>
+                            </div>
+                            <div class="clearfix modal-body">
+                                <div class="checkbox col-xs-12">
+                                    <label>
+                                        <input type="checkbox" id="IsAddOn" name="IsAddOn" /><span>Add On?</span>
+                                    </label>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    <input class="form-control" type="text" id="ConfirmationEmailAdditionalText" name="AdditionalText" placeholder="Additional Text" />
+                                </div>
+                                <hr />
+                                <div id="FormMail" class="col-xs-12">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="send btn btn-primary">Send Email</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 modal fade" id="NoteModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title">New Note</h4>
+                            </div>
+                            <div class="modal-body">
+                                <textarea class="form-control" id="NewNote" name="NewNote" rows="5"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button id="SaveNoteModal" type="button" data-dismiss="modal" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->*@
+
+            </div>
+            <div class="form-group col-xs-6">
+                <h2>@Model.Event.name</h2>
+            </div>
+            <div class="form-group col-xs-6">
+                <div class="btn-group pull-right">
+                    <span class="btn btn-default">Actions</span>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a id="btnCancel" href="#">Cancel</a></li>
+                        <li class="divider"></li>
+                        <li><a id="btnSaveReservation" href="#">Save New Reservation</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Reservation Details</h2>
+                </div>
+                <div class="panel-body">
+                    @Html.EditorFor(model => model.attendeeCountDGS)
+                    @Html.EditorFor(model => model.attendeeCountNonDGS)
+                    @Html.EditorFor(model => model.startTime, new { AddPicker = "datetime", ShowLabel = true, PickerId = "StartTimePicker" })
+                    @Html.EditorFor(model => model.endTime, new { AddPicker = "datetime", ShowLabel = true, PickerId = "EndTimePicker" })
+                    <div class="form-group">
+                        <label for="ReservationLocation">Location(s)</label>
+                        @Html.ListBox("ReservationLocation", (List<SelectListItem>)ViewBag.LocationList, new { @class = "form-control", size = ((List<SelectListItem>)ViewBag.LocationList).Count() })
+                    </div>
+                    <div class="form-group">
+                        <label for="ReservationOption">Options: </label>
+                        <div class="well">
+                            @foreach (var o in ViewBag.Options)
+                            {
+                                <div class="checkbox" id="ReservationOptionsCheckboxList">
+                                    <label>
+                                        <input type="checkbox" name="ReservationOption" value="@o.Value" checked="@o.Selected" />
+                                        @o.Text
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Event Details</h2>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Owner: </strong>@(Helpers.GetUserShortName(Model.Event.owner))</li>
+                            <li class="list-group-item"><strong>Organizer: </strong>@(Helpers.GetUserShortName(Model.Event.organizer))</li>
+                            <li class="list-group-item"><strong>Event Notes: </strong><p>@Html.Raw((Model.Event.notes ?? "").ToString().Replace("\r\n", "<br/>"))</p></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div id="NotesPanel" class="panel panel-default">
+                    <div class="clearfix panel-heading">
+                        <h2 class="panel-title">Note</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <textarea name="NewNote" id="NewNote" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrapdatetimepicker")
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            //LoadNotes(reservationid);
+            //LoadEmailBody(reservationid);
+        });
+
+        $(function() {
+
+            $("#btnSaveReservation").on('click', function() {
+                SaveReservation();
+            });
+
+            $(".datetimepicker").on('dp.change', function(e) {
+                SynchStartAndEndTimePickers($("#StartTimePicker"), $("#EndTimePicker"), 1, 1);
+            });
+
+            $("#btnCancel").on('click', function() {
+                history.go(-1);
+            });
+        });
+
+
+        function SaveReservation()
+        {
+            var form = $("#CreateReservationForm").serializeObject();
+            var reservationOptions = [];
+            $('input[name=ReservationOption]:checked').each(function() {
+                reservationOptions.push($(this).val());
+            });
+            var model = {
+                "reservation": form,
+                "ReservationLocation": $("#ReservationLocation").val(),
+                "ReservationOption": reservationOptions,
+                "NewNote": $("#NewNote").val()
+            };
+            $.ajax({
+                url: '/Reservations/AsyncCreate',
+                data: JSON.stringify(model),
+                type: "POST",
+                contentType: "application/json; charset=utf-8"
+            }).done(function (data) {
+                var r = $.parseJSON(data);
+                CreateAlert(r.message, r.class);
+                if (r.returnpath != null)
+                {
+                    window.location.href=r.returnpath;
+                }
+            });
+        }
+    </script>
+
+}

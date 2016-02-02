@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="48604ec7dbe248618d122d819848f6e4" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="EventManagementSystemModel.Consumable" Width="1.5" PointX="5.25" PointY="21.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.Contact" Width="1.5" PointX="8" PointY="27.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.DietaryRestriction" Width="1.5" PointX="10.5" PointY="27.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.Event" Width="1.5" PointX="3" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.EventIrregularRepeat" Width="1.5" PointX="5.25" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.EventStatusChoice" Width="1.5" PointX="0.75" PointY="10.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.Location" Width="1.5" PointX="6" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.LocationConfiguration" Width="1.5" PointX="8.25" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.Log" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.RepeatType" Width="1.5" PointX="0.75" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.resdataACN" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.resdataACT" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.resdataDAT" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.resdataRAC" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.resdataREP" Width="1.5" PointX="10.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.Reservation" Width="1.5" PointX="5.25" PointY="16.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.Resource" Width="1.5" PointX="5.25" PointY="24.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.ResourceType" Width="1.5" PointX="3" PointY="24.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.User" Width="1.5" PointX="8.25" PointY="23.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.UserFoodProfile" Width="1.5" PointX="10.5" PointY="24.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.UserFoodProfileDietaryRestriction" Width="1.5" PointX="12.75" PointY="24.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.Vendor" Width="1.5" PointX="3" PointY="21.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.VendorCategory" Width="1.5" PointX="3" PointY="27.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.VendorContact" Width="1.5" PointX="10.25" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.VendorVendorCategory" Width="1.5" PointX="5.25" PointY="27.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.vw_ReservationLocation" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="EventManagementSystemModel.Vendor_Consumable_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.Contact_VendorContact_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.DietaryRestriction_UserFoodProfileDietaryRestriction_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.Event_Reservation_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.EventStatus_Event_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.FK_EventIrregularRepeat_Event" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.RepeatType_Event_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.Location_LocationConfiguration_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.ResourceType_Resource_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.User_UserFoodProfile_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.UserFoodProfile_UserFoodProfileDietaryRestriction_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.Vendor_VendorContact_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.Vendor_VendorVendorCategory_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventManagementSystemModel.VendorCategory_VendorVendorCategory_FK1" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.ReservationNote" Width="1.5" PointX="7.5" PointY="32.125" />
+        <AssociationConnector Association="EventManagementSystemModel.FK_ReservationNote_Reservation" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.Option" Width="1.5" PointX="10.25" PointY="30.5" />
+        <AssociationConnector Association="EventManagementSystemModel.ReservationLocation" />
+        <AssociationConnector Association="EventManagementSystemModel.ReservationOption" />
+        <AssociationConnector Association="EventManagementSystemModel.EventLocation" />
+        <EntityTypeShape EntityType="EventManagementSystemModel.ReservationConsumable" Width="1.5" PointX="7.5" PointY="16.875" />
+        <AssociationConnector Association="EventManagementSystemModel.Consumable_ReservationConsumable_FK1" />
+        <AssociationConnector Association="EventManagementSystemModel.Reservation_ReservationConsumable_FK1" />
+        <AssociationConnector Association="EventManagementSystemModel.ReservationParticipant" />
+        <AssociationConnector Association="EventManagementSystemModel.ReservationResource" />
+        <AssociationConnector Association="EventManagementSystemModel.EventOption" />
+        <AssociationConnector Association="EventManagementSystemModel.Notifications_OptionUsers" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

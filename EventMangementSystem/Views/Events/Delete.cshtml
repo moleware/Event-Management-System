@@ -1,0 +1,192 @@
+﻿@model EventManagementSystem.Models.Event
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Event</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.owner)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.owner)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.organizer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.organizer)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.requestDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.requestDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.startTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.startTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.endTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.endTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.attendeeCount)
+        </dt>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.attendeeCountDGS)
+        </dt>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.attendeeCountNonDGS)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.attendeeCount)
+        </dd>
+        
+        <dd>
+            @Html.DisplayFor(model => model.attendeeCountDGS)
+        </dd>
+
+        <dd>
+            @Html.DisplayFor(model => model.attendeeCountNonDGS)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.repeatEnd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.repeatEnd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.repeatDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.repeatDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.repeatMonth)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.repeatMonth)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.repeatMonthWeek)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.repeatMonthWeek)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.repeatMonthlyWeekday)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.repeatMonthlyWeekday)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.repeatYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.repeatYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.repeatWeek)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.repeatWeek)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.repeatWeekday)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.repeatWeekday)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.notes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.notes)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.repeatIrregular)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.repeatIrregular)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EventStatusChoice.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventStatusChoice.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RepeatType.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RepeatType.name)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

@@ -1,0 +1,127 @@
+﻿@{
+    ViewBag.Title = "Administration";
+}
+<div class="container">
+    @{ var nextDate = DateTime.Now.Date.AddDays(DateTime.Now.DayOfWeek == DayOfWeek.Friday ? 3 : 1); }
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="ConfirmationMessage" class="hide alert alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <span id="MessageText"></span>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">
+                        Send Confirmations
+                    </h2>
+                </div>
+                <div class="panel-body">
+                    <span>Send confirmations for</span>
+                    <input class="text-center" id="ReservationConfirmationDate" name="ReservationConfirmationDate" type="text" value="@(nextDate.ToShortDateString())" />
+                    <button id="SendNextDayConfirmations" class="btn btn-default"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Send Email</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">
+                        Reports
+                    </h2>
+                </div>
+                <div class="panel-body">
+                    <div class="col-xs-12">
+                        <a href="@Url.Action("ListView", "Reservations", new { startDate = nextDate, endDate = nextDate.AddDays(1) })" class="btn btn-default"><span class="glyphicon glyphicon-list-alt"></span></a>
+                        <span>Tomorrow's Reservations in List View (All)</span>
+                    </div>
+                    <div class="col-xs-12">
+                        <a href="@(String.Format("/Reservations/ListView?startDate={0}&endDate={1}&filter=1&filter=4", nextDate, nextDate.AddDays(1)))" class="btn btn-default"><span class="glyphicon glyphicon-list-alt"></span></a>
+                        <span>Tomorrow's Reservations in List View (Hospitality)</span>
+                    </div>
+                    <div class="col-xs-12">
+                        <a href="@(String.Format("/Reservations/ListView?startDate={0}&endDate={1}&filter=2", nextDate,nextDate.AddDays(1)))" class="btn btn-default"><span class="glyphicon glyphicon-list-alt"></span></a>
+                        <span>Tomorrow's Reservations in List View (IT)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Search
+                </div>
+                <div class="panel-body clearfix">
+                    <div class="form-group">
+                        <input class="form-control" type="text" id="SearchString" name="SearchString" />
+                    </div>
+                    <div class="form-group">
+                        <button class="form-control btn btn-primary" id="SearchButton" name="SearchButton">Search</button>
+                    </div>
+                    <hr/>
+                    <div class="well clearfix" id="SearchResults"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //$("#ReservationConfirmationDate").datepicker();
+            $("#SearchButton").on('click', function () {
+                RunAdminSearch();
+            });
+            $("#SearchString").on('keypress', function (e) {
+                if (e.keyCode == 13) {
+                    RunAdminSearch();
+                    return false; // prevent the button click from happening
+                }
+            });
+        });
+        function RunAdminSearch() {
+            var terms = $("#SearchString").val();
+            $.ajax({
+                url: '/Home/_Search',
+                data: { terms: terms },
+                type: "POST"
+            }).done(function (data) {
+                SetData(data, $("#SearchResults"));
+            }).error(function (e) {
+                SetData(e, $("#SearchResults"));
+            });
+        };
+        $("#SendNextDayConfirmations").on('click', function () {
+            if (confirm("This will send a confirmation email to the organizers of this day's events. Are you sure you wish to proceed?")) {
+                var d = $("#ReservationConfirmationDate").val();
+                $(this).addClass('disabled');
+                $.ajax({
+                    url: '/Home/_SendNextDayConfirmationEmail',
+                    data: { date: d },
+                    type: "POST"
+                }).done(function (data) {
+                    var r = $.parseJSON(data);
+                    var message = "<table class='table table-striped'>";
+                    for (index = 0; index < r.length; ++index) {
+                        message += "<tr class='alert-" + r[index].Class + "'><td>" + r[index].Recipient + "</td><td>" + r[index].Details + "</td><td>" + r[index].Message + "</td></tr>";
+                    }
+                    message += "</table>";
+                    $('#ConfirmationMessage #MessageText').html(message);
+                    $('#ConfirmationMessage').removeClass('hide');
+                }).complete(function () {
+                }).error(function (e) {
+                    $('#ConfirmationMessage #MessageText').html(e);
+                    $('#ConfirmationMessage').removeClass('hide');
+                }).always(function () {
+                    $('#SendNextDayConfirmations').removeClass('disabled');
+                });
+            }
+        });
+    </script>
+}
